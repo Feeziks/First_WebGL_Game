@@ -398,7 +398,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &162986386
 GameObject:
@@ -857,6 +857,106 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309919725}
   m_CullTransparentMesh: 0
+--- !u!1 &512274815
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 512274817}
+  - component: {fileID: 512274816}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &512274816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512274815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ae3a8ad6a9feb488969bca0275a9ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+  - playerName: Test Player 1
+    playerId: 0
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 2
+    playerId: 1
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 3
+    playerId: 2
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 4
+    playerId: 3
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test player 5
+    playerId: 4
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 6
+    playerId: 5
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 7
+    playerId: 6
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+  - playerName: Test Player 8
+    playerId: 7
+    exp: 0
+    level: 0
+    money: 10
+    deployedUnits: []
+    benchedUnits: []
+--- !u!4 &512274817
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512274815}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &684950653
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,7 +1549,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1477608733
 GameObject:
@@ -1552,8 +1652,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1662,7 +1762,7 @@ RectTransform:
   m_Children:
   - {fileID: 258757398}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2095,6 +2195,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1673490182}
   m_CullTransparentMesh: 0
+--- !u!1 &1790857739
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1790857741}
+  - component: {fileID: 1790857740}
+  m_Layer: 0
+  m_Name: ShopManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1790857740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790857739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a82656758b78340aced286afdc2b08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p:
+    playerName: 
+    playerId: 0
+    exp: 0
+    level: 0
+    money: 0
+    deployedUnits: []
+    benchedUnits: []
+  shopOptions:
+  - {fileID: 1477608733}
+  - {fileID: 1515966002}
+  - {fileID: 309919725}
+  - {fileID: 40801657}
+  - {fileID: 848015165}
+--- !u!4 &1790857741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790857739}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1962525408
 GameObject:
   m_ObjectHideFlags: 0
@@ -2123,5 +2280,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

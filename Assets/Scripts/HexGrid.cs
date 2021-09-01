@@ -61,30 +61,6 @@ public class HexGrid : MonoBehaviour
 
   private Vector3 CalculateWorldPosition(int x, int y)
   {
-    /*
-    Vector3 ret = Vector3.zero;
-
-    float xOffset = 0f;
-    
-    if(y % 2 != 0)
-    {
-      xOffset = hexScale.x / 2;
-    }
-
-    xOffset += gap * x;
-
-    float yOffset = y * hexScale.y * 0.75f;
-
-    yOffset += gap * y;
-
-    float xPos = startPos.x + x * hexScale.x + xOffset;
-    float zPos = startPos.z + yOffset;
-
-    ret = new Vector3(xPos, 0f, zPos);
-
-    return ret;
-    */
-
     Vector3 ret = Vector3.zero;
 
     float zOffset = 0f;

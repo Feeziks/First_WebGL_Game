@@ -12,19 +12,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced05c294fa986d4fbcd96484913abe8, type: 3}
   m_Name: PeePeePooPoo
   m_EditorClassIdentifier: 
-  unitName: 
+  unitName: Test
   ID:
-    tier: 0
+    tier: 1
     uniqueID: 0
   unitTypes: 00000000
   unitClasses: 00000000
   storeSprite: {fileID: 0}
-  unitPrefab: {fileID: 0}
+  unitPrefab: []
+  animator: {fileID: 0}
   baseStats:
-    baseHealth: 000000000000000000000000
+    baseHealth:
+    - 0
+    - 0
+    - 0
+    baseHealthRegen:
+    - 0
+    - 0
+    - 0
+    baseMana:
+    - 0
+    - 0
+    - 0
+    baseManaRegen:
+    - 0
+    - 0
+    - 0
+    baseArmor:
+    - 0
+    - 0
+    - 0
+    baseMagicResist:
+    - 0
+    - 0
+    - 0
+    baseAttackDamage:
+    - 0
+    - 0
+    - 0
     baseAttackSpeed:
     - 0
     - 0
     - 0
     baseAttackRange: 000000000000000000000000
+    baseCritChance:
+    - 0
+    - 0
+    - 0
+    baseMagicDamage:
+    - 0
+    - 0
+    - 0
+    baseManaGainOnHit:
+    - 0
+    - 0
+    - 0
   audio: 0

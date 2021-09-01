@@ -5,6 +5,16 @@ using UnityEngine;
 
 #region Unit related types
 [System.Serializable]
+public class Unit
+{
+  public SO_Unit soUnit;
+  public int unitLevel;
+
+  //TODO: Lots more
+}
+
+
+[System.Serializable]
 public class UnitID
 {
   [SerializeField]
@@ -52,24 +62,31 @@ public enum UnitTypes : int
 public class UnitBaseStats
 {
   [Header("Health and Mana")]
-  public float[] baseHealth = new float[3];
-  public float[] baseHealthRegen = new float[3];
-  public float[] baseMana = new float[3];
-  public float[] baseManaRegen = new float[3];
+  public float[] baseHealth = new float[Constants.maxUnitLevel];
+  public float[] baseHealthRegen = new float[Constants.maxUnitLevel];
+  public float[] baseMana = new float[Constants.maxUnitLevel];
+  public float[] baseManaRegen = new float[Constants.maxUnitLevel];
 
   [Header("Defense")]
-  public float[] baseArmor = new float[3];
-  public float[] baseMagicResist = new float[3];
+  public float[] baseArmor = new float[Constants.maxUnitLevel];
+  public float[] baseMagicResist = new float[Constants.maxUnitLevel];
 
   [Header("Attack")]
-  public float[] baseAttackDamage = new float[3];
-  public float[] baseAttackSpeed = new float[3];
-  public int[] baseAttackRange = new int[3];
-  public float[] baseCritChance = new float[3];
+  public float[] baseAttackDamage = new float[Constants.maxUnitLevel];
+  public float[] baseAttackSpeed = new float[Constants.maxUnitLevel];
+  public int[] baseAttackRange = new int[Constants.maxUnitLevel];
+  public float[] baseCritChance = new float[Constants.maxUnitLevel];
 
   [Header("Magic")]
-  public float[] baseMagicDamage = new float[3];
-  public float[] baseManaGainOnHit = new float[3];  
+  public float[] baseMagicDamage = new float[Constants.maxUnitLevel];
+  public float[] baseManaGainOnHit = new float[Constants.maxUnitLevel];  
+}
+
+[System.Serializable]
+public class DeployedUnit
+{
+  public Vector2Int position;
+  public Unit unit;
 }
 
 #endregion

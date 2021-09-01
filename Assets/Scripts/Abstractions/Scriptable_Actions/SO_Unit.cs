@@ -15,7 +15,8 @@ public class SO_Unit : ScriptableObject
 
   [Header("Visuals")]
   public Sprite storeSprite;
-  public GameObject unitPrefab;
+  public GameObject[] unitPrefab = new GameObject[Constants.maxUnitLevel];
+  public Animator animator;
 
   [Header("Unit Stats")]
   public UnitBaseStats baseStats;
