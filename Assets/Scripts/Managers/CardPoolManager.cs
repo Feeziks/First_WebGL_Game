@@ -76,22 +76,22 @@ public class CardPoolManager : MonoBehaviour
     //Half of players should be able to get to the max unit level for a rare unit
     //2 players should be able to get to the max unit level for a legendary unit
 
-    numCardsByTier[UnitTier.common] = Constants.numPlayers * Constants.maxUnitLevel;
-    numCardsByTier[UnitTier.uncommon] = (Constants.numPlayers - 2) * Constants.maxUnitLevel;
-    numCardsByTier[UnitTier.rare] = (Constants.numPlayers / 2) * Constants.maxUnitLevel;
-    numCardsByTier[UnitTier.legendary] = 2 * Constants.maxUnitLevel;
+    numCardsByTier[UnitTier.common] = Constants.numPlayers * Mathf.CeilToInt(Mathf.Pow(3, Constants.maxUnitLevel - 1));
+    numCardsByTier[UnitTier.uncommon] = (Constants.numPlayers - 2) * Mathf.CeilToInt(Mathf.Pow(3, Constants.maxUnitLevel - 1));
+    numCardsByTier[UnitTier.rare] = (Constants.numPlayers / 2) * Mathf.CeilToInt(Mathf.Pow(3, Constants.maxUnitLevel - 1));
+    numCardsByTier[UnitTier.legendary] = 2 * Mathf.CeilToInt(Mathf.Pow(3, Constants.maxUnitLevel - 1));
   }
 
   public void InitializePlayerLevelToUnitTierChanceDict()
   {
-    playerLevelToUnitTierChance[1] = new float[] { 0.9f,  0.1f,      0f,    0f }; //0.9 + 0.1 + 0 + 0 = 1.0
-    playerLevelToUnitTierChance[2] = new float[] { 0.8f,  0.2f,      0f,    0f }; //0.8 + 0.2 + 0 + 0 = 1.0
-    playerLevelToUnitTierChance[3] = new float[] { 0.7f,  0.25f,  0.05f,    0f }; //0.7 + 0.25 + 0.05 + 0f = 1.0
-    playerLevelToUnitTierChance[4] = new float[] { 0.5f,  0.35f,  0.15f,    0f }; //0.5 + 0.35 + 0.15 + 0 = 1.0
-    playerLevelToUnitTierChance[5] = new float[] { 0.3f,  0.5f,   0.19f, 0.01f };
-    playerLevelToUnitTierChance[6] = new float[] { 0.2f,  0.4f,   0.35f, 0.05f };
-    playerLevelToUnitTierChance[7] = new float[] { 0.1f,  0.3f,    0.5f,  0.1f };
-    playerLevelToUnitTierChance[8] = new float[] { 0.05f, 0.2f,    0.4f, 0.35f };
+    playerLevelToUnitTierChance[1] = new float[] { 0f, 0.9f,    1f,      0f,    0f }; //0.9 + 0.1 + 0 + 0 = 1.0
+    playerLevelToUnitTierChance[2] = new float[] { 0f, 0.8f,    1f,      0f,    0f }; //0.8 + 0.2 + 0 + 0 = 1.0
+    playerLevelToUnitTierChance[3] = new float[] { 0f, 0.7f,  0.95f,     1f,    0f }; //0.7 + 0.25 + 0.05 + 0f = 1.0
+    playerLevelToUnitTierChance[4] = new float[] { 0f, 0.5f,  0.85f,     1f,    0f }; //0.5 + 0.35 + 0.15 + 0 = 1.0
+    playerLevelToUnitTierChance[5] = new float[] { 0f, 0.3f,   0.8f,  0.99f,    1f };
+    playerLevelToUnitTierChance[6] = new float[] { 0f, 0.2f,   0.6f,  0.95f,    1f };
+    playerLevelToUnitTierChance[7] = new float[] { 0f, 0.1f,   0.4f,   0.9f,    1f };
+    playerLevelToUnitTierChance[8] = new float[] { 0f, 0.05f, 0.25f,  0.65f,    1f };
   }
 
   private void InitializePool()
@@ -129,9 +129,9 @@ public class CardPoolManager : MonoBehaviour
 
     UnitTier ret = UnitTier.common;
 
-    for(int i = playerLevelToUnitTierChance[level].Length - 1; i > 0; i++)
+    for(int i = 0; i < playerLevelToUnitTierChance[level].Length; i ++)
     {
-      if(playerLevelToUnitTierChance[level][i] != 0 && randomTierChoice > playerLevelToUnitTierChance[level][i])
+      if(playerLevelToUnitTierChance[level][i] != 0 && randomTierChoice < playerLevelToUnitTierChance[level][i])
       {
         ret = (UnitTier)i;
         break;
@@ -147,16 +147,27 @@ public class CardPoolManager : MonoBehaviour
 
     List<SO_Unit> unitsInTier = new List<SO_Unit>(deck[tier].Keys);
     int randomUnitChoice;
+    int availableUnitCount;
     do
     {
-      randomUnitChoice = Mathf.FloorToInt(UnityEngine.Random.Range(0f, unitsInTier.Count));
+      randomUnitChoice = Mathf.FloorToInt(UnityEngine.Random.Range(0f, unitsInTier.Count - 1));
+      availableUnitCount = deck[tier][unitsInTier[randomUnitChoice]];
 
-    } while (deck[tier][unitsInTier[randomUnitChoice]] > 0);
+    } while (availableUnitCount <= 0);
 
     ret = unitsInTier[randomUnitChoice];
     deck[tier][unitsInTier[randomUnitChoice]] = deck[tier][unitsInTier[randomUnitChoice]] - 1;
 
     return ret;
+  }
+
+  #endregion
+
+  #region Returning Cards
+
+  public void ReturnCard(SO_Unit unit)
+  {
+    deck[unit.ID.GetTier()][unit] += 1;
   }
 
   #endregion

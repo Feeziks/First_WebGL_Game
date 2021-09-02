@@ -3,36 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopManager : MonoBehaviour
+public class ShopManager
 {
-  public Player p;
+  private Player p;
 
-  public GameObject[] shopOptions;
+  private GameObject[] shopOptions;
   private Dictionary<GameObject, SO_Unit> shopOptionToUnit;
   private Dictionary<GameObject, Image> shopOptionsToImage;
 
-  #region Singleton
+  #region Constructor / Getters / Setters
 
-  static ShopManager mInstance;
-
-  public static ShopManager instance
+  public ShopManager(Player play)
   {
-    get
-    {
-      if (mInstance == null)
-      {
-        mInstance = new GameObject("ShopManager").AddComponent(typeof(ShopManager)) as ShopManager;
-      }
-      return mInstance;
-    }
+    p = play;
+  }
+
+  public ShopManager(Player play, GameObject[] playerShopOptions)
+  {
+    p = play;
+    shopOptions = playerShopOptions;
+  }
+
+  public void SetShopOptions(GameObject[] options)
+  {
+    shopOptions = options;
+    Init();
   }
 
   #endregion
 
-  #region Unity Methods
 
-  private void Awake()
+  #region Helpers
+
+  public void Init()
   {
+    if(p == null)
+    {
+      Debug.LogError("ShopManager cannot be initialized without a player!");
+    }
     shopOptionsToImage = new Dictionary<GameObject, Image>();
     InitializeShopOptionsToImageDict();
 
@@ -40,23 +48,11 @@ public class ShopManager : MonoBehaviour
     InitializeShopOptionsToUnitDict();
   }
 
-  void Start()
-  {
-
-  }
-
-
-  void Update()
-  {
-
-  }
-
-  #endregion
-
-  #region Helpers
-
   private void InitializeShopOptionsToImageDict()
   {
+    if (shopOptions == null)
+      return;
+
     foreach(GameObject go in shopOptions)
     {
       shopOptionsToImage[go] = go.GetComponent(typeof(Image)) as Image;
@@ -65,7 +61,10 @@ public class ShopManager : MonoBehaviour
 
   private void InitializeShopOptionsToUnitDict()
   {
-    foreach(GameObject go in shopOptions)
+    if (shopOptions == null)
+      return;
+
+    foreach (GameObject go in shopOptions)
     {
       shopOptionToUnit[go] = null;
     }
@@ -73,6 +72,9 @@ public class ShopManager : MonoBehaviour
 
   private void UpdateShopOptionsToUnitDict(SO_Unit[] newUnits)
   {
+    if (shopOptions == null)
+      return;
+
     int idx = 0;
     foreach(GameObject go in shopOptions)
     {
@@ -87,7 +89,10 @@ public class ShopManager : MonoBehaviour
 
   public void UpdateShopDisplay()
   {
-    foreach(GameObject go in shopOptions)
+    if (shopOptions == null)
+      return;
+
+    foreach (GameObject go in shopOptions)
     {
       shopOptionsToImage[go].sprite = shopOptionToUnit[go].storeSprite;
     }
@@ -95,14 +100,34 @@ public class ShopManager : MonoBehaviour
 
   public void RefreshShop()
   {
+    ReturnStoreUnits();
     SO_Unit[] newUnitsForShop = CardPoolManager.instance.RequestNewCards(p);
     UpdateShopOptionsToUnitDict(newUnitsForShop);
     UpdateShopDisplay();
+    UpdatePlayerStoreUnits(newUnitsForShop);
   }
 
   public void PurchaseUnitByIndex(int index)
   {
 
+  }
+
+  public void UpdatePlayerStoreUnits(SO_Unit[] units)
+  {
+    p.storeUnits.Clear();
+
+    foreach(SO_Unit u in units)
+    {
+      p.storeUnits.Add(u);
+    }
+  }
+
+  public void ReturnStoreUnits()
+  {
+    foreach(SO_Unit u in p.storeUnits)
+    {
+      CardPoolManager.instance.ReturnCard(u);
+    }
   }
 
   #endregion

@@ -17,6 +17,7 @@ public class Player
   [Header("Units")]
   public List<DeployedUnit> deployedUnits;
   public List<Unit> benchedUnits;
+  public List<SO_Unit> storeUnits;
 
 
   public ShopManager sm;

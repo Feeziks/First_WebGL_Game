@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
   public Player[] players;
-
+  public GameObject[] playerOneShopOptions;
 
   #region Unity Methods
 
@@ -23,8 +23,23 @@ public class GameManager : MonoBehaviour
   {
     foreach(Player p in players)
     {
+      p.sm = new ShopManager(p);
+      p.sm.Init();
+      if (p == players[0])
+      {
+        p.sm.SetShopOptions(playerOneShopOptions);
+      }
       p.sm.RefreshShop();
     }
+  }
+
+  #endregion
+
+  #region Buttons
+
+  public void RefreshShopButton()
+  {
+    players[0].sm.RefreshShop();
   }
 
   #endregion
