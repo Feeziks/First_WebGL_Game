@@ -1022,6 +1022,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 1312148065}
   - playerName: Test Player 2
     playerId: 1
@@ -1036,6 +1038,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 3
     playerId: 2
@@ -1050,6 +1054,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 4
     playerId: 3
@@ -1064,6 +1070,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test player 5
     playerId: 4
@@ -1078,6 +1086,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 6
     playerId: 5
@@ -1092,6 +1102,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 7
     playerId: 6
@@ -1106,6 +1118,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 8
     playerId: 7
@@ -1120,6 +1134,8 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    bench: {fileID: 0}
+    gameBoard: {fileID: 0}
     ui: {fileID: 0}
   playerOneShopOptions:
   - {fileID: 1477608733}
@@ -1127,6 +1143,9 @@ MonoBehaviour:
   - {fileID: 309919725}
   - {fileID: 40801657}
   - {fileID: 848015165}
+  gameBoardParent: {fileID: 1312238524}
+  benchParent: {fileID: 415933803}
+  cameraTarget: {fileID: 1567308098}
 --- !u!4 &512274817
 Transform:
   m_ObjectHideFlags: 0
@@ -1726,7 +1745,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976095077}
   m_LocalRotation: {x: 0.27059805, y: 0.6532815, z: -0.27059805, w: 0.6532815}
-  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1567308099}

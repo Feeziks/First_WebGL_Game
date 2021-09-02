@@ -7,6 +7,11 @@ public class GameManager : MonoBehaviour
   public Player[] players;
   public GameObject[] playerOneShopOptions;
 
+  public GameObject gameBoardParent;
+  public GameObject benchParent;
+
+  public GameObject cameraTarget;
+
   private EventManager eManager;
 
   #region Unity Methods
@@ -15,6 +20,12 @@ public class GameManager : MonoBehaviour
   {
     eManager = FindObjectOfType(typeof(EventManager)) as EventManager;
     InitPlayerStores();
+  }
+
+  private void Start()
+  {
+    InitPlayerGameBoardsAndBenches();
+    InitCameraPosition();
   }
 
   #endregion
@@ -35,6 +46,19 @@ public class GameManager : MonoBehaviour
     }
   }
 
+  private void InitPlayerGameBoardsAndBenches()
+  {
+    for(int i = 0; i < players.Length; i++)
+    {
+      players[i].bench = benchParent.transform.GetChild(i).gameObject;
+      players[i].gameBoard = gameBoardParent.transform.GetChild(i).gameObject;
+    }
+  }
+
+  private void InitCameraPosition()
+  {
+    cameraTarget.transform.position = new Vector3(players[0].bench.transform.position.x - 200f, 0f, players[0].bench.transform.position.z);
+  }
   #endregion
 
   #region Buttons

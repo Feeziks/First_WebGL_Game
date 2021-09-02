@@ -19,6 +19,10 @@ public class Player
   public List<Unit> benchedUnits;
   public SO_Unit[] storeUnits = new SO_Unit[5];
 
+  [Header("Bench & GameBoard")]
+  public GameObject bench;
+  public GameObject gameBoard;
+
   public ShopManager sm;
   public UIManager ui;
 
