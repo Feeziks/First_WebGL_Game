@@ -11,14 +11,20 @@ public class HexGrid : MonoBehaviour
   private Vector3 hexScale = new Vector3(20f, 20f, 1f);
   private float gap = 0.1f;
 
+  public List<Vector3> startPositions;
   private Vector3 startPos;
 
   #region Unity Methods
 
   private void Awake()
   {
-    InitStartPosition();
-    CreateGrid();
+    int count = 0;
+    foreach (Vector3 v3 in startPositions)
+    {
+      InitStartPosition(v3);
+      CreateGrid(count);
+      count++;
+    }
   }
 
   private void Start()
@@ -29,7 +35,7 @@ public class HexGrid : MonoBehaviour
 
   #region Grid Creation
 
-  private void InitStartPosition()
+  private void InitStartPosition(Vector3 v3)
   {
     startPos = Vector3.zero;
 
@@ -42,18 +48,22 @@ public class HexGrid : MonoBehaviour
     float x = -hexScale.x * (gridWidth / 2) - offset;
     float z = hexScale.y * 0.75f * (gridHeight / 2);
 
-    startPos = new Vector3(x, 0f, z);
+    startPos = new Vector3(v3.x + x, 0f, v3.z + z);
   }
 
-  private void CreateGrid()
+  private void CreateGrid(int count)
   {
+    GameObject gameBoard = new GameObject("Game_Board_" + count.ToString());
+    gameBoard.transform.SetParent(transform);
+    gameBoard.transform.position = startPositions[count];
+
     for(int x = 0; x < gridWidth; x++)
     {
       for (int y = 0; y < gridHeight; y++)
       {
         GameObject thisHex = Instantiate(hexPrefab);
         thisHex.name = "Hex[" + x.ToString() + ", " + y.ToString() + "]";
-        thisHex.transform.parent = transform;
+        thisHex.transform.parent = gameBoard.transform;
         thisHex.transform.position = CalculateWorldPosition(x, y);
       }
     }
@@ -72,7 +82,7 @@ public class HexGrid : MonoBehaviour
     float xPos = x * hexScale.x * 0.75f + gap;
     float zPos = y * hexScale.y * 0.875f + gap + zOffset;
 
-    ret = new Vector3(xPos, 0f, zPos);
+    ret = new Vector3(xPos, 0f, zPos) + startPos;
     return ret;
   }
 

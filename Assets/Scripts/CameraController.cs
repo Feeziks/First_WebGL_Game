@@ -38,7 +38,9 @@ public class CameraController : MonoBehaviour
   {
     if(inputs.movement != Vector2.zero)
     {
-      gameObject.transform.position += new Vector3(inputs.movement.x, 0f, inputs.movement.y) * moveSpeed * Time.deltaTime;
+      gameObject.transform.position += -1f * transform.forward * inputs.movement.x * moveSpeed * Time.deltaTime;
+      gameObject.transform.position += transform.right * inputs.movement.y * moveSpeed * Time.deltaTime;
+      //gameObject.transform.position += new Vector3(inputs.movement.x, 0f, inputs.movement.y) * moveSpeed * Time.deltaTime;
     }
   }
 
