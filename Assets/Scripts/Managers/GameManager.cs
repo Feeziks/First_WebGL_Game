@@ -7,15 +7,17 @@ public class GameManager : MonoBehaviour
   public Player[] players;
   public GameObject[] playerOneShopOptions;
 
+  private EventManager eManager;
+
   #region Unity Methods
 
   private void Awake()
   {
+    eManager = FindObjectOfType(typeof(EventManager)) as EventManager;
     InitPlayerStores();
   }
 
   #endregion
-
 
   #region helpers
 
@@ -45,6 +47,12 @@ public class GameManager : MonoBehaviour
   public void PurchaseFromShop(int index)
   {
     players[0].sm.PurchaseUnitByIndex(index);
+  }
+
+  public void PurchaseExp()
+  {
+    if (players[0].level < Constants.maxPlayerLevel)
+      players[0].sm.PurchaseExp();
   }
 
   #endregion

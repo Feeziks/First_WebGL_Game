@@ -15,6 +15,7 @@ public static class Constants
    * Player related constants
    */
   public static int numPlayers = 8;
+  public static int maxPlayerLevel = 8;
   //                                            1 -> 2, 2 -> 3, 3 -> 4, 4 -> 5, 5 -> 6, 6 -> 7, 7 -> 8
   public static int[] expPerLevel = new int[] { 2,      3,      5,      8,      11,     15,     20 };
 }

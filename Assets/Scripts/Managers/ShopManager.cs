@@ -32,7 +32,6 @@ public class ShopManager
 
   #endregion
 
-
   #region Helpers
 
   public void Init()
@@ -153,6 +152,15 @@ public class ShopManager
     {
       go.SetActive(true);
     }
+  }
+
+  #endregion
+
+  #region EXP
+
+  public void PurchaseExp()
+  {
+    p.GainExp(1);
   }
 
   #endregion
