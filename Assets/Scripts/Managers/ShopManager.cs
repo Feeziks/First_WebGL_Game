@@ -101,6 +101,7 @@ public class ShopManager
   public void RefreshShop()
   {
     ReturnStoreUnits();
+    ReactivateShopOptions();
     SO_Unit[] newUnitsForShop = CardPoolManager.instance.RequestNewCards(p);
     UpdateShopOptionsToUnitDict(newUnitsForShop);
     UpdateShopDisplay();
@@ -109,24 +110,48 @@ public class ShopManager
 
   public void PurchaseUnitByIndex(int index)
   {
+    if (p.storeUnits[index] == null)
+      return;
 
+    //TODO: Fill in unit with the SO_Unit stuff
+    Unit newUnit = new Unit();
+    p.benchedUnits.Add(newUnit);
+
+    if(shopOptions != null)
+    {
+      shopOptions[index].SetActive(false);
+    }
+
+    p.storeUnits[index] = null;
   }
 
   public void UpdatePlayerStoreUnits(SO_Unit[] units)
   {
-    p.storeUnits.Clear();
-
+    int idx = 0;
     foreach(SO_Unit u in units)
     {
-      p.storeUnits.Add(u);
+      p.storeUnits[idx] = u;
+      idx++;
     }
   }
 
   public void ReturnStoreUnits()
   {
     foreach(SO_Unit u in p.storeUnits)
+    { 
+      if(u != null)
+        CardPoolManager.instance.ReturnCard(u);
+    }
+  }
+
+  public void ReactivateShopOptions()
+  {
+    if (shopOptions == null)
+      return;
+
+    foreach(GameObject go in shopOptions)
     {
-      CardPoolManager.instance.ReturnCard(u);
+      go.SetActive(true);
     }
   }
 

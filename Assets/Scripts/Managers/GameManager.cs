@@ -42,5 +42,10 @@ public class GameManager : MonoBehaviour
     players[0].sm.RefreshShop();
   }
 
+  public void PurchaseFromShop(int index)
+  {
+    players[0].sm.PurchaseUnitByIndex(index);
+  }
+
   #endregion
 }
