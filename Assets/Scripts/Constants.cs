@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public static class Constants
 {
@@ -22,5 +23,33 @@ public static class Constants
   /*
    * Rounds / PVE constants
    */
-  public static List<int> PveRounds = new List<int>() { 1, 2, 3, 8, 13, 18, 23, 28, 33, 38, 43, 48 };
+  public static void InitPVERounds()
+  {
+    PveRounds = new List<int>() { 1, 2, 3, 8, 13, 18, 23, 28, 33, 38, 43, 48 };
+    allPVERoundBoards = Resources.LoadAll("PVE_Rounds", typeof(SO_PVE_Board_State)).Cast<SO_PVE_Board_State>().ToList();
+    pveRoundToBoardStateDict = new Dictionary<int, SO_PVE_Board_State>();
+    for(int i = 0; i < PveRounds.Count; i++)
+    {
+      pveRoundToBoardStateDict[PveRounds[i]] = allPVERoundBoards[i];
+    }
+  }
+  public static List<int> PveRounds;
+  public static List<SO_PVE_Board_State> allPVERoundBoards;
+  public static Dictionary<int, SO_PVE_Board_State> pveRoundToBoardStateDict;
+
+  public static float timeBetweenRounds = 11f;
+  public static float roundTimeout = 60f;
+
+  /*
+   * Board Related Constants
+   */
+  public static int boardWidth = 7;
+  public static int boardHeight = 7;
+  public static int benchWidth = 9;
+  public static int benchHeight = 1;
+
+  /*
+   * I dont know what to call these
+   */
+  public static float tickRate = 60f;
 }

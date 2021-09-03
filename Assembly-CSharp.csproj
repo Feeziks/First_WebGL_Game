@@ -56,20 +56,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Types.cs" />
+    <Compile Include="Assets\Scripts\Benches.cs" />
     <Compile Include="Assets\Scripts\Managers\ShopManager.cs" />
-    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Actions\SO_Store_Card.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Objects\SO_Store_Card.cs" />
     <Compile Include="Assets\Scripts\HexGrid.cs" />
-    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Actions\SO_Item.cs" />
+    <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Objects\SO_Item.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Actions\SO_Unit.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Objects\SO_Unit.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\EventManager.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
     <Compile Include="Assets\Scripts\Managers\CardPoolManager.cs" />
     <Compile Include="Assets\Scripts\Inputs\InputController.cs" />
-    <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
-    <Compile Include="Assets\Scripts\Managers\EventManager.cs" />
-    <Compile Include="Assets\Scripts\Benches.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\Scriptable_Objects\SO_PVE_Board_State.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -10,6 +10,7 @@ public class Player
   public int playerId;
 
   [Header("Data")]
+  public int health = 100;
   public int exp;
   public int level;
   public int money;

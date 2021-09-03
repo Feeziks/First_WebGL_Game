@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ced05c294fa986d4fbcd96484913abe8, type: 3}
+  m_Name: Basic_Minion_Unit
+  m_EditorClassIdentifier: 
+  unitName: Basic Minion
+  ID:
+    tier: 1
+    uniqueID: 0
+  unitTypes: 00000000
+  unitClasses: 00000000
+  storeSprite: {fileID: 0}
+  unitPrefab:
+  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
+  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
+  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
+  animator: {fileID: 0}
+  baseStats:
+    baseHealth:
+    - 100
+    - 200
+    - 300
+    baseHealthRegen:
+    - 0
+    - 0
+    - 0
+    baseMana:
+    - 20
+    - 20
+    - 20
+    baseManaRegen:
+    - 0
+    - 0
+    - 0
+    baseArmor:
+    - 0
+    - 10
+    - 20
+    baseMagicResist:
+    - 0
+    - 10
+    - 20
+    baseAttackDamage:
+    - 10
+    - 15
+    - 20
+    baseAttackSpeed:
+    - 0.5
+    - 0.75
+    - 1
+    baseAttackRange: 010000000100000001000000
+    baseCritChance:
+    - 0
+    - 0
+    - 0
+    baseMagicDamage:
+    - 0
+    - 0
+    - 0
+    baseManaGainOnHit:
+    - 0
+    - 5
+    - 10
+  audio: 0
