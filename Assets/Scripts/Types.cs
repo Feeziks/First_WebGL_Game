@@ -9,7 +9,9 @@ public class Unit
 {
   public SO_Unit soUnit;
   public int unitLevel;
-
+  public GameObject go;
+  public Unit target;
+  public UnitStatusType status;
   //TODO: Lots more
 }
 
@@ -87,6 +89,15 @@ public class DeployedUnit
 {
   public Vector2Int position;
   public Unit unit;
+}
+
+[System.Flags]
+public enum UnitStatusType : int
+{
+  normal = 0,
+  stunned = 1,
+  silenced = 2,
+  someOtherStatus = 3
 }
 
 #endregion

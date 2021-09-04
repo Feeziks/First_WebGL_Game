@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - StoreOption
+  - PVE_Unit
+  - Player_Unit
   layers:
   - Default
   - TransparentFX

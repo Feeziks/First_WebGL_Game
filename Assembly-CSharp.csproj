@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Managers\CardPoolManager.cs" />
     <Compile Include="Assets\Scripts\Inputs\InputController.cs" />
     <Compile Include="Assets\Scripts\Abstractions\Scriptable_Objects\SO_PVE_Board_State.cs" />
+    <Compile Include="Assets\Scripts\Managers\BattleManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
     if(EventSystem.current.IsPointerOverGameObject())
     {
       hovered = GetHoveredObject(GetPointerRaycastResults());
-      if(hovered.CompareTag("StoreOption"))
+      if(hovered && hovered.CompareTag("StoreOption"))
       {
         DisplayStoreOptionToolTip();
       }

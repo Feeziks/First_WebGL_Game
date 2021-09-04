@@ -12,6 +12,9 @@ public static class Constants
   public static int maxUnitLevel = 3;
   public static int cardsInShop = 5;
 
+  public static string PlayerUnitTag = "Player_Unit";
+  public static string PVETag = "PVE_Unit";
+
   /*
    * Player related constants
    */
@@ -37,6 +40,7 @@ public static class Constants
   public static List<SO_PVE_Board_State> allPVERoundBoards;
   public static Dictionary<int, SO_PVE_Board_State> pveRoundToBoardStateDict;
 
+  public static float paddingTime = 3f;
   public static float timeBetweenRounds = 11f;
   public static float roundTimeout = 60f;
 

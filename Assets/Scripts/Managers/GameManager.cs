@@ -16,12 +16,13 @@ public class GameManager : MonoBehaviour
 
   private bool tickUpdate = false;
   private bool roundOccuring = false;
-  private bool roundTimerRunning = false;
   private bool timeBetwenRoundOccuring = true;
-  private bool betweenRoundTimerRunning = false;
+  private bool paddingTimeOccuring = false;
 
   private bool nextRoundStart = false;
   private bool thisRoundEnd = false;
+
+  private List<BattleManager> battleManagers = new List<BattleManager>();
 
   private EventManager eManager;
 
@@ -31,7 +32,6 @@ public class GameManager : MonoBehaviour
   {
     eManager = FindObjectOfType(typeof(EventManager)) as EventManager;
     InitPlayerStores();
-
     Constants.InitPVERounds();
   }
 
@@ -40,9 +40,10 @@ public class GameManager : MonoBehaviour
     InitPlayerGameBoardsAndBenches();
     InitCameraPosition();
 
+    InitBattleManagers();
+
     StartCoroutine("Tick");
     StartCoroutine("BetweenRoundTimer");
-    LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);
   }
 
   private void Update()
@@ -65,12 +66,12 @@ public class GameManager : MonoBehaviour
       if(thisRoundEnd)
       {
         thisRoundEnd = false;
-        currentRound++;
+      }
 
-        if (Constants.PveRounds.Contains(currentRound))
-        {
-          LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);
-        }
+      foreach(BattleManager bm in battleManagers)
+      {
+        //If the battle is occuring perform a tick on that battle
+        bm.Tick();
       }
 
     }
@@ -80,6 +81,15 @@ public class GameManager : MonoBehaviour
       {
         nextRoundStart = false;
       }
+    }
+  }
+
+  private void InitializeBattles()
+  {
+    //If battle is PVE send players deployed units back to the players boards
+    if (Constants.PveRounds.Contains(currentRound))
+    {
+      ReturnPlayersToPersonalBoards();
     }
   }
   #endregion
@@ -127,11 +137,12 @@ public class GameManager : MonoBehaviour
         enemyUnits[enemyUnits.Count - 1].transform.position = DeployedUnitPositionToBoardPosition(u.position, playerBoard);
         enemyUnits[enemyUnits.Count - 1].name = "PVE_Round_" + currentRound + "_Enemy_Unit_" + (enemyUnits.Count - 1).ToString();
         enemyUnits[enemyUnits.Count - 1].transform.SetParent(playerBoard.transform);
+        enemyUnits[enemyUnits.Count - 1].tag = Constants.PVETag;
       }
     }
   }
 
-  private List<GameObject> GetAllChildren(GameObject parent)
+  public static List<GameObject> GetAllChildren(GameObject parent)
   {
     List<GameObject> ret = new List<GameObject>();
     foreach(Transform t in parent.transform)
@@ -154,6 +165,24 @@ public class GameManager : MonoBehaviour
     ret = new Vector3(xPos, yPos, zPos);
 
     return ret;
+  }
+
+  private void InitBattleManagers()
+  {
+    foreach(Player p in players)
+    {
+      BattleManager thisBattleManager = new BattleManager(p.gameBoard, p);
+      thisBattleManager.SetPVE();
+      battleManagers.Add(thisBattleManager);
+    }
+  }
+
+  private void ReturnPlayersToPersonalBoards()
+  {
+    foreach(BattleManager bm in battleManagers)
+    {
+      bm.ReturnPlayers();
+    }
   }
   #endregion
 
@@ -190,18 +219,21 @@ public class GameManager : MonoBehaviour
 
   private IEnumerator BetweenRoundTimer()
   {
-    betweenRoundTimerRunning = true;
     timeBetwenRoundOccuring = true;
     float timer = Constants.timeBetweenRounds;
 
-    while(timer > 0f)
+    if (Constants.PveRounds.Contains(currentRound))
+    {
+      LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);
+    }
+
+    while (timer >= 0f)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;
       players[0].ui.UpdateTimer(timer);
     }
 
-    betweenRoundTimerRunning = false;
     timeBetwenRoundOccuring = false;
     nextRoundStart = true;
     StartCoroutine("DuringRoundTimer");
@@ -210,24 +242,40 @@ public class GameManager : MonoBehaviour
 
   private IEnumerator DuringRoundTimer()
   {
-    roundTimerRunning = true;
     roundOccuring = true;
     float timer = Constants.roundTimeout;
 
     //TODO: Round ends early if all enemies on all gameboard are defeated
 
-    while (timer > 0f)
+    while (timer >= 0f)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;
       players[0].ui.UpdateTimer(timer);
     }
 
-    roundTimerRunning = false;
     thisRoundEnd = true;
     roundOccuring = false;
-    StartCoroutine("BetweenRoundTimer");
+    ReturnPlayersToPersonalBoards();
+    StartCoroutine("PaddingTimer");
     yield return null;
+  }
+
+  private IEnumerator PaddingTimer()
+  {
+    paddingTimeOccuring = true;
+    float timer = Constants.paddingTime;
+
+    while(timer >= 0f)
+    {
+      yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
+      timer -= 1f / Constants.tickRate;
+      players[0].ui.UpdateTimer(timer);
+    }
+
+    currentRound++;
+    paddingTimeOccuring = false;
+    StartCoroutine("BetweenRoundTimer");
   }
 
   #endregion

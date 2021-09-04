@@ -19,7 +19,10 @@ MonoBehaviour:
   unitTypes: 00000000
   unitClasses: 00000000
   storeSprite: {fileID: 21300000, guid: 6401a3b299580fd41913b131c2fd6034, type: 3}
-  unitPrefab: []
+  unitPrefab:
+  - {fileID: 869057973860883974, guid: f549acc6d396d3044be4e7a8fe083242, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   animator: {fileID: 0}
   baseStats:
     baseHealth:
