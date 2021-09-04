@@ -13,4 +13,9 @@ public class InputController : MonoBehaviour
   {
     movement = context.ReadValue<Vector2>();
   }
+
+  public void OnQuit(InputAction.CallbackContext context)
+  {
+    Application.Quit();    
+  }
 }

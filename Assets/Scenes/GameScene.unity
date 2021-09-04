@@ -1870,6 +1870,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 1312148065}
   - playerName: Test Player 2
@@ -1888,6 +1889,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 3
@@ -1906,6 +1908,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 4
@@ -1924,6 +1927,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test player 5
@@ -1942,6 +1946,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 6
@@ -1960,6 +1965,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 7
@@ -1978,6 +1984,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   - playerName: Test Player 8
@@ -1996,6 +2003,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     bench: {fileID: 0}
+    benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
   playerOneShopOptions:
@@ -4356,6 +4364,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 864015c9-92ac-46e0-a703-d621f3a9e840
     m_ActionName: Gameplay/CameraMove[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1567308100}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: OnQuit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 31d74e3b-dd57-4eeb-8e86-8f77c999caf8
+    m_ActionName: Gameplay/Quit[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard & Mouse
   m_DefaultActionMap: Gameplay
