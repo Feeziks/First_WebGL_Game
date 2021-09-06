@@ -8,7 +8,7 @@ public class ShopManager
   private Player p;
 
   private GameObject[] shopOptions;
-  private Dictionary<GameObject, SO_Unit> shopOptionToUnit;
+  public Dictionary<GameObject, SO_Unit> shopOptionToUnit;
   private Dictionary<GameObject, Image> shopOptionsToImage;
 
   #region Constructor / Getters / Setters

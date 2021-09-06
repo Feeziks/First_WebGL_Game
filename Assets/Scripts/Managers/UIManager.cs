@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
   #region Properties
 
   [Header("Janky")]
-  Player p0;
+  public Player p0;
 
   [Header("EXP")]
   public GameObject expPanel;
@@ -55,6 +55,16 @@ public class UIManager : MonoBehaviour
       if(hovered && hovered.CompareTag("StoreOption"))
       {
         DisplayStoreOptionToolTip();
+      }
+
+      if(hovered && hovered.CompareTag("Player_Unit"))
+      {
+        DisplayPlayerUnitToolTip();
+      }
+
+      if(hovered && hovered.CompareTag("PVE_Unit"))
+      {
+        DisplayPVEUnitToolTip();
       }
     }
     else
@@ -158,8 +168,39 @@ public class UIManager : MonoBehaviour
 
   private void DisplayStoreOptionToolTip()
   {
+    SO_Unit unit = p0.sm.shopOptionToUnit[hovered];
+
+    toolTipHeader.text = unit.unitName;
+    string body = "";
+    foreach(UnitTypes t in unit.unitTypes)
+    {
+      body += t.ToString();
+      body += "\n";
+    }
+    foreach(UnitClasses t in unit.unitClasses)
+    {
+      body += t.ToString();
+      body += "\n";
+    }
+
+    toolTipBody.text = body;
+
     toolTipPanel.SetActive(true);
-    toolTipPanel.transform.position = Input.mousePosition;
+    toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
+  }
+
+  private void DisplayPlayerUnitToolTip()
+  {
+    toolTipHeader.text = "Hovering over a unit is cool!";
+    toolTipBody.text = "Everyone does it!";
+
+    toolTipPanel.SetActive(true);
+    toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
+  }
+
+  private void DisplayPVEUnitToolTip()
+  {
+
   }
   #endregion
 }

@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     eManager = FindObjectOfType(typeof(EventManager)) as EventManager;
     InitPlayerStores();
     Constants.InitPVERounds();
+
+    UIManager ui = FindObjectOfType(typeof(UIManager)) as UIManager;
+    ui.p0 = players[0];
   }
 
   private void Start()
@@ -246,6 +249,10 @@ public class GameManager : MonoBehaviour
     float timer = Constants.roundTimeout;
 
     //TODO: Round ends early if all enemies on all gameboard are defeated
+    foreach (Player p in players)
+    {
+      p.roundOccuring = true;
+    }
 
     while (timer >= 0f)
     {
@@ -266,7 +273,12 @@ public class GameManager : MonoBehaviour
     paddingTimeOccuring = true;
     float timer = Constants.paddingTime;
 
-    while(timer >= 0f)
+    foreach (Player p in players)
+    {
+      p.roundOccuring = false;
+    }
+
+    while (timer >= 0f)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;
