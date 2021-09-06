@@ -10,6 +10,7 @@ public static class Constants
    */
   public static int numUnitTiers = 4;
   public static int maxUnitLevel = 3;
+  public static int unitsToLevelUp = 3;
   public static int cardsInShop = 5;
 
   public static string PlayerUnitTag = "Player_Unit";

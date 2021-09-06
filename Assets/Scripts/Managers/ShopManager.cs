@@ -93,7 +93,10 @@ public class ShopManager
 
     foreach (GameObject go in shopOptions)
     {
-      shopOptionsToImage[go].sprite = shopOptionToUnit[go].storeSprite;
+      if (shopOptionToUnit[go] == null)
+        go.SetActive(false);
+      else
+        shopOptionsToImage[go].sprite = shopOptionToUnit[go].storeSprite;
     }
   }
 
@@ -122,7 +125,7 @@ public class ShopManager
     newUnit.status = UnitStatusType.normal;
     newUnit.go = GameObject.Instantiate(p.storeUnits[index].unitPrefab[0]);
 
-    p.AddToBench(newUnit);
+    p.UnitPurchased(newUnit);
 
 
     if(shopOptions != null)

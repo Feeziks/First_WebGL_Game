@@ -117,7 +117,12 @@ public class CardPoolManager : MonoBehaviour
     for(int i = 0; i < Constants.cardsInShop; i++)
     {
       UnitTier tier = GetRandomTierByLevel(p.level);
-      ret[i] = GetRandomUnitByTier(tier);
+      SO_Unit temp;
+      do
+      {
+        temp = GetRandomUnitByTier(tier);
+      } while (p.maxLevelUnits.Contains(temp));
+      ret[i] = temp;
     }
 
     return ret;
@@ -148,15 +153,23 @@ public class CardPoolManager : MonoBehaviour
     List<SO_Unit> unitsInTier = new List<SO_Unit>(deck[tier].Keys);
     int randomUnitChoice;
     int availableUnitCount;
+    int count = 0;
     do
     {
       randomUnitChoice = Mathf.FloorToInt(UnityEngine.Random.Range(0f, unitsInTier.Count - 1));
       availableUnitCount = deck[tier][unitsInTier[randomUnitChoice]];
+      count++;
+    } while (availableUnitCount <= 0 && count < 100);
 
-    } while (availableUnitCount <= 0);
-
-    ret = unitsInTier[randomUnitChoice];
-    deck[tier][unitsInTier[randomUnitChoice]] = deck[tier][unitsInTier[randomUnitChoice]] - 1;
+    if (count == 100)
+    {
+      ret = null;
+    }
+    else
+    {
+      ret = unitsInTier[randomUnitChoice];
+      deck[tier][unitsInTier[randomUnitChoice]] = deck[tier][unitsInTier[randomUnitChoice]] - 1;
+    }
 
     return ret;
   }

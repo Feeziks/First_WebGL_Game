@@ -1861,6 +1861,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1880,6 +1881,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1899,6 +1901,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1918,6 +1921,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1937,6 +1941,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1956,6 +1961,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1975,6 +1981,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1994,6 +2001,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     money: 10
+    roundOccuring: 0
     deployedUnits: []
     benchedUnits: []
     storeUnits:
