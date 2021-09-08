@@ -49,23 +49,20 @@ public class UIManager : MonoBehaviour
 
   private void Update()
   {
-    if(EventSystem.current.IsPointerOverGameObject())
+    if (EventSystem.current.IsPointerOverGameObject())
     {
-      hovered = GetHoveredObject(GetPointerRaycastResults());
-      if(hovered && hovered.CompareTag("StoreOption"))
+      hovered = GetHoveredUIObject(GetPointerUIRaycastResults());
+      if (hovered && hovered.CompareTag("StoreOption"))
       {
         DisplayStoreOptionToolTip();
       }
-
-      if(hovered && hovered.CompareTag("Player_Unit"))
-      {
+    }
+    else if (hovered = GetHoveredNonUIObject(GetPointerNonUIRaycastResults()))
+    {
+      if (hovered.CompareTag("Player_Unit"))
         DisplayPlayerUnitToolTip();
-      }
-
-      if(hovered && hovered.CompareTag("PVE_Unit"))
-      {
+      else if (hovered.CompareTag("PVE_Unit"))
         DisplayPVEUnitToolTip();
-      }
     }
     else
     {
@@ -144,7 +141,7 @@ public class UIManager : MonoBehaviour
 
   #region Tool Tips
   //Find if we are hovering over an ability
-  private GameObject GetHoveredObject(List<RaycastResult> raycasts)
+  private GameObject GetHoveredUIObject(List<RaycastResult> raycasts)
   {
     for (int index = 0; index < raycasts.Count; index++)
     {
@@ -157,13 +154,35 @@ public class UIManager : MonoBehaviour
     return null;
   }
 
-  private List<RaycastResult> GetPointerRaycastResults()
+  private GameObject GetHoveredNonUIObject(List<RaycastHit> raycasts)
+  {
+    for(int index = 0; index < raycasts.Count; index++)
+    {
+      if(raycasts[index].transform.gameObject.layer == LayerMask.NameToLayer("Unit"))
+      {
+        return raycasts[index].transform.gameObject;
+      }
+    }
+
+    return null;
+  }
+
+  private List<RaycastResult> GetPointerUIRaycastResults()
   {
     PointerEventData eventData = new PointerEventData(EventSystem.current);
     eventData.position = Input.mousePosition;
     List<RaycastResult> result = new List<RaycastResult>();
     EventSystem.current.RaycastAll(eventData, result);
     return result;
+  }
+
+  private List<RaycastHit> GetPointerNonUIRaycastResults()
+  {
+    Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+    List<RaycastHit> ret = new List<RaycastHit>();
+
+    ret = Physics.RaycastAll(r).ToList();
+    return ret;
   }
 
   private void DisplayStoreOptionToolTip()
@@ -191,6 +210,7 @@ public class UIManager : MonoBehaviour
 
   private void DisplayPlayerUnitToolTip()
   {
+    //TODO: GameObject To Unit information
     toolTipHeader.text = "Hovering over a unit is cool!";
     toolTipBody.text = "Everyone does it!";
 
@@ -200,7 +220,25 @@ public class UIManager : MonoBehaviour
 
   private void DisplayPVEUnitToolTip()
   {
+    //TODO: GameObject to PVE Unit Information
+    toolTipHeader.text = "This PVE Unit wants to kick your butt";
+    toolTipBody.text = "Try not to let him do that";
 
+    toolTipPanel.SetActive(true);
+    toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
   }
+  #endregion
+
+  #region Gizmos
+
+  public void OnDrawGizmos()
+  {
+    Gizmos.color = Color.red;
+    Vector3 origin = Camera.main.transform.position;
+    Vector3 direction = Camera.main.transform.forward;
+    Ray r = new Ray(origin, direction);
+    Gizmos.DrawRay(r);
+  }
+
   #endregion
 }

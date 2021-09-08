@@ -102,6 +102,11 @@ public class Player
     }
   }
 
+  private void PlaceUnitAtDeployedPosition(DeployedUnit thisUnit)
+  {
+    thisUnit.unit.go.transform.position = gameBoardChildren[thisUnit.position.x + thisUnit.position.y * Constants.boardWidth].transform.position;
+  }
+
   private bool CheckForUnitUpgrade(Unit newUnit)
   {
     int numSameUnits = 1;
@@ -156,6 +161,8 @@ public class Player
       if (newUnit.unitLevel == Constants.maxUnitLevel)
         maxLevelUnits.Add(newUnit.soUnit);
       newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
+      //benchedUnits.Add(newUnit);
+      PlaceUnitInFirstEmptyBenchPosition(newUnit);
       UnitPurchased(newUnit);
       return;
     }
