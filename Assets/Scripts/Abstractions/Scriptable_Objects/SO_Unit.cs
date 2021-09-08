@@ -8,6 +8,7 @@ public class SO_Unit : ScriptableObject
   [Header("Identifiers")]
   public string unitName;
   public UnitID ID;
+  public string unitToolTipText;
 
   [Header("Types")]
   public List<UnitTypes> unitTypes;

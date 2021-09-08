@@ -16,6 +16,7 @@ MonoBehaviour:
   ID:
     tier: 1
     uniqueID: 0
+  unitToolTipText: This is a testing common unit - neat eh
   unitTypes: 00000000
   unitClasses: 00000000
   storeSprite: {fileID: 21300000, guid: 6401a3b299580fd41913b131c2fd6034, type: 3}
@@ -26,48 +27,48 @@ MonoBehaviour:
   animator: {fileID: 0}
   baseStats:
     baseHealth:
-    - 0
-    - 0
-    - 0
+    - 100
+    - 200
+    - 300
     baseHealthRegen:
     - 0
-    - 0
-    - 0
+    - 1
+    - 5
     baseMana:
-    - 0
-    - 0
-    - 0
+    - 50
+    - 40
+    - 30
     baseManaRegen:
     - 0
     - 0
     - 0
     baseArmor:
-    - 0
-    - 0
-    - 0
+    - 10
+    - 15
+    - 20
     baseMagicResist:
     - 0
-    - 0
-    - 0
+    - 5
+    - 10
     baseAttackDamage:
-    - 0
-    - 0
-    - 0
+    - 20
+    - 30
+    - 40
     baseAttackSpeed:
-    - 0
-    - 0
-    - 0
-    baseAttackRange: 000000000000000000000000
+    - 1
+    - 1.5
+    - 2
+    baseAttackRange: 010000000100000001000000
     baseCritChance:
-    - 0
-    - 0
-    - 0
+    - 0.01
+    - 0.05
+    - 0.1
     baseMagicDamage:
-    - 0
-    - 0
-    - 0
+    - 10
+    - 20
+    - 30
     baseManaGainOnHit:
-    - 0
-    - 0
-    - 0
+    - 5
+    - 5
+    - 5
   audio: 0

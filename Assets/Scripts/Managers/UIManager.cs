@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour
   public TextMeshProUGUI toolTipHeader;
   public TextMeshProUGUI toolTipBody;
 
+  private GameManager gm;
   #endregion
 
   #region unity Methods
@@ -45,6 +46,8 @@ public class UIManager : MonoBehaviour
     InitExpPanel();
 
     InitPlayerPanels();
+
+    gm = FindObjectOfType(typeof(GameManager)) as GameManager;
   }
 
   private void Update()
@@ -93,7 +96,7 @@ public class UIManager : MonoBehaviour
   {
     playerPanelText = new TextMeshProUGUI[playerPanels.Length];
     int idx = 0;
-    foreach(GameObject go in playerPanels)
+    foreach (GameObject go in playerPanels)
     {
       playerPanelText[idx] = go.GetComponent(typeof(TextMeshProUGUI)) as TextMeshProUGUI;
       idx++;
@@ -134,7 +137,7 @@ public class UIManager : MonoBehaviour
 
   public void UpdatePlayerPanelOrder()
   {
-    
+
   }
 
   #endregion
@@ -156,9 +159,9 @@ public class UIManager : MonoBehaviour
 
   private GameObject GetHoveredNonUIObject(List<RaycastHit> raycasts)
   {
-    for(int index = 0; index < raycasts.Count; index++)
+    for (int index = 0; index < raycasts.Count; index++)
     {
-      if(raycasts[index].transform.gameObject.layer == LayerMask.NameToLayer("Unit"))
+      if (raycasts[index].transform.gameObject.layer == LayerMask.NameToLayer("Unit"))
       {
         return raycasts[index].transform.gameObject;
       }
@@ -191,12 +194,12 @@ public class UIManager : MonoBehaviour
 
     toolTipHeader.text = unit.unitName;
     string body = "";
-    foreach(UnitTypes t in unit.unitTypes)
+    foreach (UnitTypes t in unit.unitTypes)
     {
       body += t.ToString();
       body += "\n";
     }
-    foreach(UnitClasses t in unit.unitClasses)
+    foreach (UnitClasses t in unit.unitClasses)
     {
       body += t.ToString();
       body += "\n";
@@ -211,34 +214,84 @@ public class UIManager : MonoBehaviour
   private void DisplayPlayerUnitToolTip()
   {
     //TODO: GameObject To Unit information
-    toolTipHeader.text = "Hovering over a unit is cool!";
-    toolTipBody.text = "Everyone does it!";
+    Unit u = GetHoveredPlayerUnitInformation();
+
+    toolTipHeader.text = u.soUnit.unitName;
+    toolTipBody.text = UnitToToolTopText(u);
 
     toolTipPanel.SetActive(true);
     toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
   }
 
+  private string UnitToToolTopText(Unit u)
+  {
+    string ret = "";
+
+    ret += u.soUnit.unitToolTipText;
+    ret += "\n";
+    ret += "Armor: " + u.soUnit.baseStats.baseArmor[u.unitLevel - 1] + "\t";
+    ret += "Magic Resist: " + u.soUnit.baseStats.baseMagicResist[u.unitLevel - 1] + "\n";
+    ret += "Attack Damage: " + u.soUnit.baseStats.baseAttackDamage[u.unitLevel - 1] + "\t";
+    ret += "Attack Speed: " + u.soUnit.baseStats.baseAttackSpeed[u.unitLevel - 1] + "\n";
+    ret += "Attack Range: " + u.soUnit.baseStats.baseAttackRange[u.unitLevel - 1] + "\t";
+    ret += "Crit Chance: " + u.soUnit.baseStats.baseCritChance[u.unitLevel - 1] + "\n";
+    ret += "Magic Damage: " + u.soUnit.baseStats.baseMagicDamage[u.unitLevel - 1] + "\t";
+
+    return ret;
+  }
+
+  private Unit GetHoveredPlayerUnitInformation()
+  {
+    Unit ret = null;
+
+    GameObject gameBoardOrBench = hovered.transform.parent.gameObject;
+    Player owner = null;
+
+    foreach (Player p in gm.players)
+    {
+      if (p.gameBoard == gameBoardOrBench)
+      {
+        owner = p;
+        break;
+      }
+
+      if (p.bench == gameBoardOrBench.transform.parent.gameObject)
+      {
+        owner = p;
+        break;
+      }
+    }
+
+    foreach (DeployedUnit du in owner.deployedUnits)
+    {
+      if (du.unit.go == hovered)
+      {
+        ret = du.unit;
+        return ret;
+      }
+    }
+
+    foreach (Unit u in owner.benchedUnits)
+    {
+      if (u.go == hovered)
+      {
+        ret = u;
+        return ret;
+      }
+    }
+
+    return ret;
+  }
+
   private void DisplayPVEUnitToolTip()
   {
     //TODO: GameObject to PVE Unit Information
+
     toolTipHeader.text = "This PVE Unit wants to kick your butt";
     toolTipBody.text = "Try not to let him do that";
 
     toolTipPanel.SetActive(true);
     toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
   }
-  #endregion
-
-  #region Gizmos
-
-  public void OnDrawGizmos()
-  {
-    Gizmos.color = Color.red;
-    Vector3 origin = Camera.main.transform.position;
-    Vector3 direction = Camera.main.transform.forward;
-    Ray r = new Ray(origin, direction);
-    Gizmos.DrawRay(r);
-  }
-
   #endregion
 }
