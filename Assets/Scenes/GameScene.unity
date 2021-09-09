@@ -1862,6 +1862,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1883,6 +1884,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1904,6 +1906,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1925,6 +1928,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1946,6 +1950,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1967,6 +1972,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -1988,6 +1994,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -2009,6 +2016,7 @@ MonoBehaviour:
     level: 1
     money: 10
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:
@@ -3081,6 +3089,7 @@ GameObject:
   - component: {fileID: 976095079}
   - component: {fileID: 976095078}
   - component: {fileID: 976095081}
+  - component: {fileID: 976095082}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3184,6 +3193,22 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &976095082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976095077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &1058853926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3607,6 +3632,7 @@ MonoBehaviour:
     level: 0
     money: 0
     roundOccuring: 0
+    unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
     storeUnits:

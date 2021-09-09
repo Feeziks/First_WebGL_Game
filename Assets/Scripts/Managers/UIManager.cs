@@ -60,15 +60,6 @@ public class UIManager : MonoBehaviour
         DisplayStoreOptionToolTip();
       }
     }
-    else if (hovered = GetHoveredNonUIObject(GetPointerNonUIRaycastResults()))
-    {
-      if (hovered.CompareTag("Player_Unit"))
-      {
-          DisplayPlayerUnitToolTip();
-      }
-      else if (hovered.CompareTag("PVE_Unit"))
-        DisplayPVEUnitToolTip();
-    }
     else
     {
       toolTipPanel.SetActive(false);
@@ -213,6 +204,19 @@ public class UIManager : MonoBehaviour
     toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
   }
 
+  public void EnableUnitToolTip(Unit u)
+  {
+    toolTipHeader.text = u.soUnit.unitName;
+    toolTipBody.text = UnitToToolTopText(u);
+
+    toolTipPanel.SetActive(true);
+    toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
+  }
+
+  public void DisableUnitToolTip()
+  {
+    toolTipPanel.SetActive(false);
+  }
   private void DisplayPlayerUnitToolTip()
   {
     //TODO: GameObject To Unit information
@@ -229,13 +233,13 @@ public class UIManager : MonoBehaviour
 
     ret += u.soUnit.unitToolTipText;
     ret += "\n";
-    ret += "Armor: " + u.soUnit.baseStats.baseArmor[u.unitLevel - 1] + "\t";
-    ret += "Magic Resist: " + u.soUnit.baseStats.baseMagicResist[u.unitLevel - 1] + "\n";
-    ret += "Attack Damage: " + u.soUnit.baseStats.baseAttackDamage[u.unitLevel - 1] + "\t";
-    ret += "Attack Speed: " + u.soUnit.baseStats.baseAttackSpeed[u.unitLevel - 1] + "\n";
-    ret += "Attack Range: " + u.soUnit.baseStats.baseAttackRange[u.unitLevel - 1] + "\t";
-    ret += "Crit Chance: " + u.soUnit.baseStats.baseCritChance[u.unitLevel - 1] + "\n";
-    ret += "Magic Damage: " + u.soUnit.baseStats.baseMagicDamage[u.unitLevel - 1] + "\t";
+    ret += "Armor: " + u.soUnit.baseStats.baseArmor[u.unitLevel] + "\t";
+    ret += "Magic Resist: " + u.soUnit.baseStats.baseMagicResist[u.unitLevel] + "\n";
+    ret += "Attack Damage: " + u.soUnit.baseStats.baseAttackDamage[u.unitLevel] + "\t";
+    ret += "Attack Speed: " + u.soUnit.baseStats.baseAttackSpeed[u.unitLevel] + "\n";
+    ret += "Attack Range: " + u.soUnit.baseStats.baseAttackRange[u.unitLevel] + "\t";
+    ret += "Crit Chance: " + u.soUnit.baseStats.baseCritChance[u.unitLevel] + "\n";
+    ret += "Magic Damage: " + u.soUnit.baseStats.baseMagicDamage[u.unitLevel] + "\t";
 
     return ret;
   }
