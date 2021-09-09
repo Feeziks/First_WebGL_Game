@@ -7,6 +7,22 @@ TagManager:
   - StoreOption
   - PVE_Unit
   - Player_Unit
+  - Player0Placeable
+  - Player0Unplaceable
+  - Player1Placeable
+  - Player1Unplaceable
+  - Player2Placeable
+  - Player2Unplaceable
+  - Player3Placeable
+  - Player3Unplaceable
+  - Player4Placeable
+  - Player4Unplaceable
+  - Player5Placeable
+  - Player5Unplaceable
+  - Player6Placeable
+  - Player6Unplaceable
+  - Player7Placeable
+  - Player7Unplaceable
   layers:
   - Default
   - TransparentFX

@@ -23,14 +23,14 @@ public class Player
   public GameObject unitParent;
   public List<GameObject> deployedUnits;
   public List<GameObject> benchedUnits;
-  private Dictionary<GameObject, Unit> gameObjectToUnitDict = new Dictionary<GameObject, Unit>();
+  public Dictionary<GameObject, Unit> gameObjectToUnitDict = new Dictionary<GameObject, Unit>();
   public SO_Unit[] storeUnits = new SO_Unit[5];
   public List<SO_Unit> maxLevelUnits = new List<SO_Unit>();
 
   [Header("Bench & GameBoard")]
   public GameObject bench;
   public List<GameObject> benchChildren;
-  private Dictionary<GameObject, GameObject> benchChildToBenchedUnitDict = new Dictionary<GameObject, GameObject>();
+  public Dictionary<GameObject, GameObject> benchChildToBenchedUnitDict = new Dictionary<GameObject, GameObject>();
   public GameObject gameBoard;
   private List<GameObject> gameBoardChildren;
 
@@ -80,6 +80,7 @@ public class Player
     gameObjectToUnitDict[newUnit].soUnit = toAdd;
     gameObjectToUnitDict[newUnit].unitLevel = unitLevel;
     gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+    gameObjectToUnitDict[newUnit].owner = this;
     benchedUnits.Add(newUnit);
     PlaceUnitInFirstEmptyBenchPosition(newUnit);
 
@@ -171,6 +172,7 @@ public class Player
       gameObjectToUnitDict[newUnit].soUnit = toUpgrade;
       gameObjectToUnitDict[newUnit].unitLevel = unitLevel + 1;
       gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+      gameObjectToUnitDict[newUnit].owner = this;
       benchedUnits.Add(newUnit);
       PlaceUnitInFirstEmptyBenchPosition(newUnit);
 
@@ -201,6 +203,12 @@ public class Player
       {
         upgradeAfterRoundFinishes = true;
         unitsToUpgradeAfterRoundFinishes[toUpgrade] = unitLevel;
+
+        if(unitLevel + 1 == Constants.maxUnitLevel - 1)
+        {
+          maxLevelUnits.Add(toUpgrade);
+        }
+
         return;
       }
 
@@ -227,6 +235,7 @@ public class Player
       gameObjectToUnitDict[newUnit].soUnit = toUpgrade;
       gameObjectToUnitDict[newUnit].unitLevel = unitLevel + 1;
       gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+      gameObjectToUnitDict[newUnit].owner = this;
       newUnit.transform.position = pos;
       deployedUnits.Add(newUnit);
 

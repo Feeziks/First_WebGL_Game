@@ -66,7 +66,11 @@ public class HexGrid : MonoBehaviour
         thisHex.name = "Hex[" + x.ToString() + ", " + y.ToString() + "]";
         thisHex.transform.parent = gameBoard.transform;
         thisHex.transform.position = CalculateWorldPosition(x, y);
-        thisHex.layer = LayerMask.NameToLayer("HexGrid");
+        thisHex.layer = Constants.hexGridLayer;
+        if(x <= 2)
+          thisHex.tag = "Player" + count.ToString() + "Placeable";
+        else
+          thisHex.tag = "Player" + count.ToString() + "Unplaceable";
       }
     }
   }

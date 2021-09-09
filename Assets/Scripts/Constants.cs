@@ -45,6 +45,8 @@ public static class Constants
   public static float timeBetweenRounds = 11f;
   public static float roundTimeout = 60f;
 
+  public static LayerMask hexGridLayer = 8;
+
   /*
    * Board Related Constants
    */

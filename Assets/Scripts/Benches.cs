@@ -48,6 +48,7 @@ public class Benches : MonoBehaviour
       thisBenchHexGo.transform.position = new Vector3(thisHexPosX, 0f, thisHexPosZ);
 
       thisBenchHexGo.layer = LayerMask.NameToLayer("HexGrid");
+      thisBenchHexGo.tag = "Player" + count.ToString() + "Placeable";
     }
   }
 
