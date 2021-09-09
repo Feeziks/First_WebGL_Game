@@ -54,6 +54,7 @@ public class HexGrid : MonoBehaviour
   private void CreateGrid(int count)
   {
     GameObject gameBoard = new GameObject("Game_Board_" + count.ToString());
+    gameBoard.layer = LayerMask.NameToLayer("HexGrid");
     gameBoard.transform.SetParent(transform);
     gameBoard.transform.position = startPositions[count];
 
@@ -65,6 +66,7 @@ public class HexGrid : MonoBehaviour
         thisHex.name = "Hex[" + x.ToString() + ", " + y.ToString() + "]";
         thisHex.transform.parent = gameBoard.transform;
         thisHex.transform.position = CalculateWorldPosition(x, y);
+        thisHex.layer = LayerMask.NameToLayer("HexGrid");
       }
     }
   }

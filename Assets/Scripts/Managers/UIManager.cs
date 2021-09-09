@@ -63,7 +63,9 @@ public class UIManager : MonoBehaviour
     else if (hovered = GetHoveredNonUIObject(GetPointerNonUIRaycastResults()))
     {
       if (hovered.CompareTag("Player_Unit"))
-        DisplayPlayerUnitToolTip();
+      {
+          DisplayPlayerUnitToolTip();
+      }
       else if (hovered.CompareTag("PVE_Unit"))
         DisplayPVEUnitToolTip();
     }
@@ -264,7 +266,7 @@ public class UIManager : MonoBehaviour
 
     foreach (DeployedUnit du in owner.deployedUnits)
     {
-      if (du.unit.go == hovered)
+      //if (du.unit.go == hovered)
       {
         ret = du.unit;
         return ret;
@@ -273,7 +275,7 @@ public class UIManager : MonoBehaviour
 
     foreach (Unit u in owner.benchedUnits)
     {
-      if (u.go == hovered)
+      //if (u.go == hovered)
       {
         ret = u;
         return ret;

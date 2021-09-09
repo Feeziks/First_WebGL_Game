@@ -1737,7 +1737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 415933805}
   - component: {fileID: 415933804}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Benches
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3661,7 +3661,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1312238525}
   - component: {fileID: 1312238526}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HexGrids
   m_TagString: Untagged
   m_Icon: {fileID: 0}

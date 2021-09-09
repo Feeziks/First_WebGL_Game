@@ -5,18 +5,6 @@ using UnityEngine;
 
 #region Unit related types
 [System.Serializable]
-public class Unit
-{
-  public SO_Unit soUnit;
-  public int unitLevel;
-  public GameObject go;
-  public Unit target;
-  public UnitStatusType status;
-  //TODO: Lots more
-}
-
-
-[System.Serializable]
 public class UnitID
 {
   [SerializeField]
@@ -82,13 +70,6 @@ public class UnitBaseStats
   [Header("Magic")]
   public float[] baseMagicDamage = new float[Constants.maxUnitLevel];
   public float[] baseManaGainOnHit = new float[Constants.maxUnitLevel];  
-}
-
-[System.Serializable]
-public class DeployedUnit
-{
-  public Vector2Int position;
-  public Unit unit;
 }
 
 [System.Flags]

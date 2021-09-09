@@ -19,8 +19,8 @@ public class Player
   private bool upgradeAfterRoundFinishes;
 
   [Header("Units")]
-  public List<DeployedUnit> deployedUnits;
-  public List<Unit> benchedUnits;
+  public List<GameObject> deployedUnits;
+  public List<GameObject> benchedUnits;
   public SO_Unit[] storeUnits = new SO_Unit[5];
   public List<SO_Unit> maxLevelUnits = new List<SO_Unit>();
 
@@ -61,7 +61,7 @@ public class Player
 
   }
 
-  public void UnitPurchased(Unit toAdd)
+  public void UnitPurchased(SO_Unit toAdd)
   {
     if(benchChildren.Count == 0)
     {
@@ -96,15 +96,15 @@ public class Player
 
       if(empty)
       {
-        thisUnit.go.transform.parent = go.transform;
-        thisUnit.go.transform.position = go.transform.position + new Vector3(0f, 1f, 0f);
+        //thisUnit.go.transform.parent = go.transform;
+        //thisUnit.go.transform.position = go.transform.position + new Vector3(0f, 1f, 0f);
       }
     }
   }
 
-  private void PlaceUnitAtDeployedPosition(DeployedUnit thisUnit)
+  private void PlaceUnitAtDeployedPosition(GameObject thisUnit)
   {
-    thisUnit.unit.go.transform.position = gameBoardChildren[thisUnit.position.x + thisUnit.position.y * Constants.boardWidth].transform.position;
+    //thisUnit.unit.go.transform.position = gameBoardChildren[thisUnit.position.x + thisUnit.position.y * Constants.boardWidth].transform.position;
   }
 
   private bool CheckForUnitUpgrade(Unit newUnit)
@@ -151,7 +151,7 @@ public class Player
     {
       foreach (Unit u in benchedUnitsToReplace)
       {
-        GameObject.DestroyImmediate(u.go);
+        //GameObject.DestroyImmediate(u.go);
         benchedUnits.Remove(u);
       }
 
@@ -160,7 +160,7 @@ public class Player
       newUnit.unitLevel = toUpgrade.unitLevel + 1;
       if (newUnit.unitLevel == Constants.maxUnitLevel)
         maxLevelUnits.Add(newUnit.soUnit);
-      newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
+      //newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
       //benchedUnits.Add(newUnit);
       PlaceUnitInFirstEmptyBenchPosition(newUnit);
       UnitPurchased(newUnit);
@@ -186,9 +186,9 @@ public class Player
         newUnit.unitLevel = toUpgrade.unitLevel + 1;
         if (newUnit.unitLevel == Constants.maxUnitLevel)
           maxLevelUnits.Add(newUnit.soUnit);
-        newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
+        //newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
         //Put this unit in the position of the first deployed unit we are replacing
-        newUnit.go.transform.position = deployedUnitsToReplace[0].unit.go.transform.position;
+        //newUnit.go.transform.position = deployedUnitsToReplace[0].unit.go.transform.position;
         DeployedUnit newDeployedUnit = new DeployedUnit();
         newDeployedUnit.unit = newUnit;
         newDeployedUnit.position = deployedUnitsToReplace[0].position;
@@ -196,13 +196,13 @@ public class Player
 
         foreach(Unit u in benchedUnitsToReplace)
         {
-          GameObject.Destroy(u.go);
+          //GameObject.Destroy(u.go);
           benchedUnits.Remove(u);
         }
 
         foreach(DeployedUnit du in deployedUnitsToReplace)
         {
-          GameObject.Destroy(du.unit.go);
+          //GameObject.Destroy(du.unit.go);
           deployedUnitsToReplace.Remove(du);
         }
 
@@ -224,11 +224,13 @@ public class Player
         gameBoardChildren = GameManager.GetAllChildren(gameBoard);
       }
 
+      /*
       float xPos = gameBoardChildren[gameBoardChildren.Count - (int)(u.position.x + u.position.y * Constants.boardHeight)].transform.position.x;
       float yPos = 1f;
       float zPos = gameBoardChildren[gameBoardChildren.Count - (int)(u.position.x + u.position.y * Constants.boardHeight)].transform.position.z;
+      */
 
-      u.unit.go.transform.position = new Vector3(xPos, yPos, zPos);   
+      //u.unit.go.transform.position = new Vector3(xPos, yPos, zPos);   
     }
   }
 }

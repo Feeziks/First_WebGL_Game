@@ -123,7 +123,7 @@ public class ShopManager
     newUnit.soUnit = p.storeUnits[index];
     newUnit.unitLevel = 1;
     newUnit.status = UnitStatusType.normal;
-    newUnit.go = GameObject.Instantiate(p.storeUnits[index].unitPrefab[0]);
+    //newUnit.go = GameObject.Instantiate(p.storeUnits[index].unitPrefab[0]);
 
     p.UnitPurchased(newUnit);
 

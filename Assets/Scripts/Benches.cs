@@ -35,6 +35,7 @@ public class Benches : MonoBehaviour
     GameObject benchGo = new GameObject("Bench_" + count.ToString());
     benchGo.transform.SetParent(transform);
     benchGo.transform.position = v3;
+    benchGo.layer = LayerMask.NameToLayer("HexGrid");
     for(int i = 0; i < benchWidth; i++)
     {
       GameObject thisBenchHexGo = Instantiate(benchPrefab);
@@ -45,6 +46,8 @@ public class Benches : MonoBehaviour
       float thisHexPosZ = (i - (benchWidth - 1) / 2f) * benchPrefab.transform.localScale.y * 1.8f + zPos;
 
       thisBenchHexGo.transform.position = new Vector3(thisHexPosX, 0f, thisHexPosZ);
+
+      thisBenchHexGo.layer = LayerMask.NameToLayer("HexGrid");
     }
   }
 
