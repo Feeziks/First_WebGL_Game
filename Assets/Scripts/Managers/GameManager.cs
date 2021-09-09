@@ -36,6 +36,15 @@ public class GameManager : MonoBehaviour
 
     UIManager ui = FindObjectOfType(typeof(UIManager)) as UIManager;
     ui.p0 = players[0];
+
+    foreach(Player p in players)
+    {
+      GameObject unitParent = new GameObject("Player_" + p.playerName + "_Units");
+      unitParent.transform.position = Vector3.zero;
+      unitParent.transform.localScale = Vector3.one;
+      unitParent.transform.parent = transform;
+      p.unitParent = unitParent;
+    }
   }
 
   private void Start()
@@ -134,13 +143,19 @@ public class GameManager : MonoBehaviour
       List<GameObject> enemyUnits = new List<GameObject>();
       GameObject playerBoard = p.gameBoard;
 
-      foreach (DeployedUnit u in board.units)
+      for(int idx = 0; idx < board.units.Count; idx++)
       {
-        enemyUnits.Add(Instantiate(u.unit.soUnit.unitPrefab[u.unit.unitLevel]));
-        enemyUnits[enemyUnits.Count - 1].transform.position = DeployedUnitPositionToBoardPosition(u.position, playerBoard);
-        enemyUnits[enemyUnits.Count - 1].name = "PVE_Round_" + currentRound + "_Enemy_Unit_" + (enemyUnits.Count - 1).ToString();
-        enemyUnits[enemyUnits.Count - 1].transform.SetParent(playerBoard.transform);
-        enemyUnits[enemyUnits.Count - 1].tag = Constants.PVETag;
+        GameObject thisEnemy = Instantiate(board.units[idx].unitPrefab[board.level[idx]]);
+        thisEnemy.name = "PVE_Round_" + currentRound + "_Enemy_Unit_" + idx.ToString();
+        thisEnemy.transform.SetParent(playerBoard.transform);
+        thisEnemy.tag = Constants.PVETag;
+        thisEnemy.transform.position = PVEUnitPositionToBoardPosition(board.positions[idx], playerBoard);
+        Unit thisEnemyUnit = thisEnemy.GetComponent(typeof(Unit)) as Unit;
+        thisEnemyUnit.soUnit = board.units[idx];
+        thisEnemyUnit.unitLevel = board.level[idx];
+        thisEnemyUnit.status = UnitStatusType.normal;
+
+        enemyUnits.Add(thisEnemy);
       }
     }
   }
@@ -155,15 +170,17 @@ public class GameManager : MonoBehaviour
     return ret;
   }
 
-  private Vector3 DeployedUnitPositionToBoardPosition(Vector2 pos, GameObject gameBoard)
+  private Vector3 PVEUnitPositionToBoardPosition(Vector2 pos, GameObject gameBoard)
   {
     Vector3 ret = new Vector3();
 
     List<GameObject> gameBoardChildren = GetAllChildren(gameBoard);
 
-    float xPos = gameBoardChildren[gameBoardChildren.Count - (int)(pos.x + pos.y * Constants.boardHeight)].transform.position.x;
+    int index = (int)(pos.x + pos.y * Constants.boardWidth) + 2; // the + 2 accounts for the parents and stuff idk
+
+    float xPos = gameBoardChildren[gameBoardChildren.Count - index].transform.position.x;
     float yPos = 1f;
-    float zPos = gameBoardChildren[gameBoardChildren.Count - (int)(pos.x + pos.y * Constants.boardHeight)].transform.position.z;
+    float zPos = gameBoardChildren[gameBoardChildren.Count - index].transform.position.z;
 
     ret = new Vector3(xPos, yPos, zPos);
 
@@ -224,6 +241,11 @@ public class GameManager : MonoBehaviour
   {
     timeBetwenRoundOccuring = true;
     float timer = Constants.timeBetweenRounds;
+
+    foreach(Player p in players)
+    {
+      p.RoundEnd();
+    }
 
     if (Constants.PveRounds.Contains(currentRound))
     {

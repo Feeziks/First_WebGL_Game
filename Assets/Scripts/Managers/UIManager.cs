@@ -216,10 +216,8 @@ public class UIManager : MonoBehaviour
   private void DisplayPlayerUnitToolTip()
   {
     //TODO: GameObject To Unit information
-    Unit u = GetHoveredPlayerUnitInformation();
-
-    toolTipHeader.text = u.soUnit.unitName;
-    toolTipBody.text = UnitToToolTopText(u);
+    toolTipHeader.text = "Gotta fix this";
+    toolTipBody.text = "Stupid Mono behaviour";
 
     toolTipPanel.SetActive(true);
     toolTipPanel.transform.position = Input.mousePosition + new Vector3(2f, 2f, 0f);
@@ -238,49 +236,6 @@ public class UIManager : MonoBehaviour
     ret += "Attack Range: " + u.soUnit.baseStats.baseAttackRange[u.unitLevel - 1] + "\t";
     ret += "Crit Chance: " + u.soUnit.baseStats.baseCritChance[u.unitLevel - 1] + "\n";
     ret += "Magic Damage: " + u.soUnit.baseStats.baseMagicDamage[u.unitLevel - 1] + "\t";
-
-    return ret;
-  }
-
-  private Unit GetHoveredPlayerUnitInformation()
-  {
-    Unit ret = null;
-
-    GameObject gameBoardOrBench = hovered.transform.parent.gameObject;
-    Player owner = null;
-
-    foreach (Player p in gm.players)
-    {
-      if (p.gameBoard == gameBoardOrBench)
-      {
-        owner = p;
-        break;
-      }
-
-      if (p.bench == gameBoardOrBench.transform.parent.gameObject)
-      {
-        owner = p;
-        break;
-      }
-    }
-
-    foreach (DeployedUnit du in owner.deployedUnits)
-    {
-      //if (du.unit.go == hovered)
-      {
-        ret = du.unit;
-        return ret;
-      }
-    }
-
-    foreach (Unit u in owner.benchedUnits)
-    {
-      //if (u.go == hovered)
-      {
-        ret = u;
-        return ret;
-      }
-    }
 
     return ret;
   }

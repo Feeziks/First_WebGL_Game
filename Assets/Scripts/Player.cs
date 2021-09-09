@@ -17,16 +17,20 @@ public class Player
   public int money;
   public bool roundOccuring;
   private bool upgradeAfterRoundFinishes;
+  private Dictionary<SO_Unit, int> unitsToUpgradeAfterRoundFinishes = new Dictionary<SO_Unit, int>();
 
   [Header("Units")]
+  public GameObject unitParent;
   public List<GameObject> deployedUnits;
   public List<GameObject> benchedUnits;
+  private Dictionary<GameObject, Unit> gameObjectToUnitDict = new Dictionary<GameObject, Unit>();
   public SO_Unit[] storeUnits = new SO_Unit[5];
   public List<SO_Unit> maxLevelUnits = new List<SO_Unit>();
 
   [Header("Bench & GameBoard")]
   public GameObject bench;
   public List<GameObject> benchChildren;
+  private Dictionary<GameObject, GameObject> benchChildToBenchedUnitDict = new Dictionary<GameObject, GameObject>();
   public GameObject gameBoard;
   private List<GameObject> gameBoardChildren;
 
@@ -37,6 +41,7 @@ public class Player
   {
   }
 
+  #region EXP And Money
   public void GainExp(int amount)
   {
     if (level == Constants.maxPlayerLevel)
@@ -61,43 +66,48 @@ public class Player
 
   }
 
-  public void UnitPurchased(SO_Unit toAdd)
+  #endregion
+
+  #region Units gained and leveling
+
+  public void UnitGained(SO_Unit toAdd, int unitLevel)
+  {
+    //TODO: How to add a new unit
+
+    GameObject newUnit = GameObject.Instantiate(toAdd.unitPrefab[0]);
+    newUnit.transform.parent = unitParent.transform;
+    gameObjectToUnitDict[newUnit] = newUnit.GetComponent(typeof(Unit)) as Unit;
+    gameObjectToUnitDict[newUnit].soUnit = toAdd;
+    gameObjectToUnitDict[newUnit].unitLevel = unitLevel;
+    gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+    benchedUnits.Add(newUnit);
+    PlaceUnitInFirstEmptyBenchPosition(newUnit);
+
+    if (CheckForUnitUpgrade(toAdd, unitLevel))
+    {
+      UpgradeUnit(toAdd, unitLevel);
+    }
+
+  }
+
+  private void PlaceUnitInFirstEmptyBenchPosition(GameObject thisUnit)
   {
     if(benchChildren.Count == 0)
     {
       benchChildren = GameManager.GetAllChildren(bench);
+      foreach(GameObject go in benchChildren)
+      {
+        benchChildToBenchedUnitDict[go] = null;
+      }
     }
 
-    //Check if we have enough units to upgrade to the next tier
-    if(CheckForUnitUpgrade(toAdd))
-    {
-      UpgradeUnit(toAdd);
-    }
-    else
-    {
-      benchedUnits.Add(toAdd);
-      PlaceUnitInFirstEmptyBenchPosition(toAdd);
-    }
-  }
-
-  private void PlaceUnitInFirstEmptyBenchPosition(Unit thisUnit)
-  {
-    bool empty = false;
     foreach(GameObject go in benchChildren)
     {
-      empty = true;
-      foreach(Transform t in go.transform)
+      if(benchChildToBenchedUnitDict[go] == null)
       {
-        if(t.CompareTag(Constants.PlayerUnitTag))
-        {
-          empty = false;
-        }
-      }
-
-      if(empty)
-      {
-        //thisUnit.go.transform.parent = go.transform;
-        //thisUnit.go.transform.position = go.transform.position + new Vector3(0f, 1f, 0f);
+        benchChildToBenchedUnitDict[go] = thisUnit;
+        thisUnit.transform.position = go.transform.position + new Vector3(0f, thisUnit.transform.localScale.y / 2f + 1f, 0f);
+        return;
       }
     }
   }
@@ -107,130 +117,154 @@ public class Player
     //thisUnit.unit.go.transform.position = gameBoardChildren[thisUnit.position.x + thisUnit.position.y * Constants.boardWidth].transform.position;
   }
 
-  private bool CheckForUnitUpgrade(Unit newUnit)
+  private bool CheckForUnitUpgrade(SO_Unit newUnit, int unitLevel)
   {
-    int numSameUnits = 1;
-    foreach(DeployedUnit u in deployedUnits)
+    int numSameUnits = 0;
+    foreach(GameObject go in benchedUnits)
     {
-      if (u.unit.soUnit == newUnit.soUnit && u.unit.unitLevel == newUnit.unitLevel)
+      if(gameObjectToUnitDict[go].soUnit == newUnit && gameObjectToUnitDict[go].unitLevel == unitLevel)
+      {
         numSameUnits++;
+      }
     }
-
-    foreach(Unit u in benchedUnits)
+    foreach(GameObject go in deployedUnits)
     {
-      if(u.soUnit == newUnit.soUnit && u.unitLevel == newUnit.unitLevel)
+      if (gameObjectToUnitDict[go].soUnit == newUnit && gameObjectToUnitDict[go].unitLevel == unitLevel)
       {
         numSameUnits++;
       }
     }
 
-    if(numSameUnits >= Constants.unitsToLevelUp)
-    {
+    if (numSameUnits >= Constants.unitsToLevelUp)
       return true;
-    }
 
     return false;
   }
 
-  private void UpgradeUnit(Unit toUpgrade)
+  private void UpgradeUnit(SO_Unit toUpgrade, int unitLevel)
   {
-    List<Unit> benchedUnitsToReplace = new List<Unit>();
-    List<DeployedUnit> deployedUnitsToReplace = new List<DeployedUnit>();
-    benchedUnitsToReplace.Add(toUpgrade);
-    //Collect the units that will be "consumed" in this upgrade
-    foreach(Unit u in benchedUnits)
+    List<GameObject> benchedUnitsToUpgradeWith = new List<GameObject>();
+    List<GameObject> deployedUnitsToUpgradeWith = new List<GameObject>();
+
+    //First check if we are upgrading benched units only
+    foreach(GameObject go in benchedUnits)
     {
-      if(u.soUnit == toUpgrade.soUnit && u.unitLevel == toUpgrade.unitLevel)
+      if (gameObjectToUnitDict[go].soUnit == toUpgrade && gameObjectToUnitDict[go].unitLevel == unitLevel)
       {
-        benchedUnitsToReplace.Add(u);
+        benchedUnitsToUpgradeWith.Add(go);
       }
     }
 
-    //If we have enough just in the benched units reaplce them all right now
-    if (benchedUnitsToReplace.Count == Constants.unitsToLevelUp)
+    if(benchedUnitsToUpgradeWith.Count == Constants.unitsToLevelUp)
     {
-      foreach (Unit u in benchedUnitsToReplace)
+      foreach(GameObject go in benchedUnitsToUpgradeWith)
       {
-        //GameObject.DestroyImmediate(u.go);
-        benchedUnits.Remove(u);
+        benchedUnits.Remove(go);
+        benchChildToBenchedUnitDict.Remove(go);
+        gameObjectToUnitDict.Remove(go);
+        GameObject.DestroyImmediate(go);
       }
 
-      Unit newUnit = new Unit();
-      newUnit.soUnit = toUpgrade.soUnit;
-      newUnit.unitLevel = toUpgrade.unitLevel + 1;
-      if (newUnit.unitLevel == Constants.maxUnitLevel)
-        maxLevelUnits.Add(newUnit.soUnit);
-      //newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
-      //benchedUnits.Add(newUnit);
+      GameObject newUnit = GameObject.Instantiate(toUpgrade.unitPrefab[unitLevel + 1]);
+      newUnit.transform.parent = unitParent.transform;
+      gameObjectToUnitDict[newUnit] = newUnit.GetComponent(typeof(Unit)) as Unit;
+      gameObjectToUnitDict[newUnit].soUnit = toUpgrade;
+      gameObjectToUnitDict[newUnit].unitLevel = unitLevel + 1;
+      gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+      benchedUnits.Add(newUnit);
       PlaceUnitInFirstEmptyBenchPosition(newUnit);
-      UnitPurchased(newUnit);
+
+      if (unitLevel + 1 == Constants.maxUnitLevel - 1)
+      {
+        maxLevelUnits.Add(toUpgrade);
+      }
+      else if (CheckForUnitUpgrade(toUpgrade, unitLevel + 1))
+      {
+        UpgradeUnit(toUpgrade, unitLevel + 1);
+      }
+
       return;
     }
 
-    //If we have enough but it 'uses' any number of deployed units must check if we are currently in a round
-    foreach(DeployedUnit u in deployedUnits)
+    //Next check if we need to consume any deployed units for the upgrade
+    foreach(GameObject go in deployedUnits)
     {
-      if(u.unit.soUnit == toUpgrade.soUnit && u.unit.unitLevel == toUpgrade.unitLevel)
+      if(gameObjectToUnitDict[go].soUnit == toUpgrade && gameObjectToUnitDict[go].unitLevel == unitLevel)
       {
-        deployedUnitsToReplace.Add(u);
+        deployedUnitsToUpgradeWith.Add(go);
       }
     }
 
-    if(!roundOccuring)
+    if(benchedUnitsToUpgradeWith.Count + deployedUnitsToUpgradeWith.Count == Constants.unitsToLevelUp)
     {
-      //If not currently in a round do the upgrade right away with mix of deployed and benched units
-      if(benchedUnitsToReplace.Count + deployedUnitsToReplace.Count == Constants.unitsToLevelUp)
+      if(roundOccuring)
       {
-        Unit newUnit = new Unit();
-        newUnit.soUnit = toUpgrade.soUnit;
-        newUnit.unitLevel = toUpgrade.unitLevel + 1;
-        if (newUnit.unitLevel == Constants.maxUnitLevel)
-          maxLevelUnits.Add(newUnit.soUnit);
-        //newUnit.go = GameObject.Instantiate(toUpgrade.soUnit.unitPrefab[newUnit.unitLevel - 1]);
-        //Put this unit in the position of the first deployed unit we are replacing
-        //newUnit.go.transform.position = deployedUnitsToReplace[0].unit.go.transform.position;
-        DeployedUnit newDeployedUnit = new DeployedUnit();
-        newDeployedUnit.unit = newUnit;
-        newDeployedUnit.position = deployedUnitsToReplace[0].position;
-        deployedUnits.Add(newDeployedUnit);
-
-        foreach(Unit u in benchedUnitsToReplace)
-        {
-          //GameObject.Destroy(u.go);
-          benchedUnits.Remove(u);
-        }
-
-        foreach(DeployedUnit du in deployedUnitsToReplace)
-        {
-          //GameObject.Destroy(du.unit.go);
-          deployedUnitsToReplace.Remove(du);
-        }
-
-        UnitPurchased(newUnit);
+        upgradeAfterRoundFinishes = true;
+        unitsToUpgradeAfterRoundFinishes[toUpgrade] = unitLevel;
+        return;
       }
+
+      foreach (GameObject go in benchedUnitsToUpgradeWith)
+      {
+        benchedUnits.Remove(go);
+        benchChildToBenchedUnitDict.Remove(go);
+        gameObjectToUnitDict.Remove(go);
+        GameObject.DestroyImmediate(go);
+      }
+
+      Vector3 pos = deployedUnitsToUpgradeWith[0].transform.position;
+
+      foreach(GameObject go in deployedUnitsToUpgradeWith)
+      {
+        deployedUnits.Remove(go);
+        gameObjectToUnitDict.Remove(go);
+        GameObject.DestroyImmediate(go);
+      }
+
+      GameObject newUnit = GameObject.Instantiate(toUpgrade.unitPrefab[unitLevel + 1]);
+      newUnit.transform.parent = unitParent.transform;
+      gameObjectToUnitDict[newUnit] = newUnit.GetComponent(typeof(Unit)) as Unit;
+      gameObjectToUnitDict[newUnit].soUnit = toUpgrade;
+      gameObjectToUnitDict[newUnit].unitLevel = unitLevel + 1;
+      gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
+      newUnit.transform.position = pos;
+      deployedUnits.Add(newUnit);
+
+      if (unitLevel + 1 == Constants.maxUnitLevel)
+      {
+        maxLevelUnits.Add(toUpgrade);
+      }
+      else if (CheckForUnitUpgrade(toUpgrade, unitLevel + 1))
+      {
+        UpgradeUnit(toUpgrade, unitLevel + 1);
+      }
+
+      return;
     }
-
-    //If currently in a round "consume" the benched units and set a flag to perform an upgrade at the end of the round
-    //TODO: This
-
   }
+
+  #endregion
+
+  #region Messages To Recieve
+
+  public void RoundEnd()
+  {
+    if(upgradeAfterRoundFinishes)
+    {
+      foreach(KeyValuePair<SO_Unit, int> kvp in unitsToUpgradeAfterRoundFinishes)
+      {
+        UpgradeUnit(kvp.Key, kvp.Value);
+      }
+
+      unitsToUpgradeAfterRoundFinishes.Clear();
+      upgradeAfterRoundFinishes = false;
+    }
+  }
+
+  #endregion
 
   public void ReturnToBoard()
   {
-    foreach (DeployedUnit u in deployedUnits)
-    {
-      if (gameBoardChildren == null)
-      {
-        gameBoardChildren = GameManager.GetAllChildren(gameBoard);
-      }
-
-      /*
-      float xPos = gameBoardChildren[gameBoardChildren.Count - (int)(u.position.x + u.position.y * Constants.boardHeight)].transform.position.x;
-      float yPos = 1f;
-      float zPos = gameBoardChildren[gameBoardChildren.Count - (int)(u.position.x + u.position.y * Constants.boardHeight)].transform.position.z;
-      */
-
-      //u.unit.go.transform.position = new Vector3(xPos, yPos, zPos);   
-    }
+    //TODO: Not sure what this is for honestly
   }
 }

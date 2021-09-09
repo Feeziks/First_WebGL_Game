@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PVE_Round_1
   m_EditorClassIdentifier: 
   units:
-  - position: {x: 4, y: 2}
-    unit:
-      soUnit: {fileID: 11400000, guid: 9cd6614330baef84682879fca788f4e8, type: 2}
-      unitLevel: 1
+  - {fileID: 11400000, guid: 9cd6614330baef84682879fca788f4e8, type: 2}
+  positions:
+  - {x: 3, y: 2}
+  level: 00000000

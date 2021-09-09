@@ -109,6 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18de5bfe0ff298541af9ee9e85c1575d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soUnit: {fileID: 0}
-  unitLevel: 0
+  soUnit: {fileID: 11400000, guid: a1a9f5c1495afae4690ee32d5efde28a, type: 2}
+  unitLevel: 2
   status: 0

@@ -118,15 +118,7 @@ public class ShopManager
     if (p.benchedUnits.Count == Constants.benchWidth)
       return;
 
-    //TODO: Fill in unit with the SO_Unit stuff
-    Unit newUnit = new Unit();
-    newUnit.soUnit = p.storeUnits[index];
-    newUnit.unitLevel = 1;
-    newUnit.status = UnitStatusType.normal;
-    //newUnit.go = GameObject.Instantiate(p.storeUnits[index].unitPrefab[0]);
-
-    p.UnitPurchased(newUnit);
-
+    p.UnitGained(p.storeUnits[index], 0);
 
     if(shopOptions != null)
     {
