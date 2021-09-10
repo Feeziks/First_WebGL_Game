@@ -13,6 +13,9 @@ public class UIManager : MonoBehaviour
   [Header("Janky")]
   public Player p0;
 
+  [Header("Money")]
+  public TextMeshProUGUI moneyText;
+
   [Header("EXP")]
   public GameObject expPanel;
   public TextMeshProUGUI playerLevelText;
@@ -101,6 +104,15 @@ public class UIManager : MonoBehaviour
   {
     playerLevelText.text = level.ToString();
     expSpriteImage.sprite = levelToExpSpritesDict[level][exp];
+  }
+
+  #endregion
+
+  #region player money methods
+
+  public void UpdateMoney(int amount)
+  {
+    moneyText.text = amount.ToString();
   }
 
   #endregion

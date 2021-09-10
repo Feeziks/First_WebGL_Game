@@ -17,10 +17,6 @@ public class GameManager : MonoBehaviour
   private bool tickUpdate = false;
   private bool roundOccuring = false;
   private bool timeBetwenRoundOccuring = true;
-  private bool paddingTimeOccuring = false;
-
-  private bool nextRoundStart = false;
-  private bool thisRoundEnd = false;
 
   private List<BattleManager> battleManagers = new List<BattleManager>();
 
@@ -74,34 +70,15 @@ public class GameManager : MonoBehaviour
   {
     if(roundOccuring)
     {
-
-      if(thisRoundEnd)
-      {
-        thisRoundEnd = false;
-      }
-
       foreach(BattleManager bm in battleManagers)
       {
-        //If the battle is occuring perform a tick on that battle
         bm.Tick();
       }
 
     }
     else if(timeBetwenRoundOccuring)
     {
-      if (nextRoundStart)
-      {
-        nextRoundStart = false;
-      }
-    }
-  }
-
-  private void InitializeBattles()
-  {
-    //If battle is PVE send players deployed units back to the players boards
-    if (Constants.PveRounds.Contains(currentRound))
-    {
-      ReturnPlayersToPersonalBoards();
+      //TODO: Do we need to do anything
     }
   }
   #endregion
@@ -197,20 +174,14 @@ public class GameManager : MonoBehaviour
     }
   }
 
-  private void ReturnPlayersToPersonalBoards()
-  {
-    foreach(BattleManager bm in battleManagers)
-    {
-      bm.ReturnPlayers();
-    }
-  }
   #endregion
 
   #region Buttons
 
   public void RefreshShopButton()
   {
-    players[0].sm.RefreshShop();
+    if(players[0].money >= Constants.storeRefreshPrice)
+      players[0].sm.RefreshShop();
   }
 
   public void PurchaseFromShop(int index)
@@ -220,7 +191,7 @@ public class GameManager : MonoBehaviour
 
   public void PurchaseExp()
   {
-    if (players[0].level < Constants.maxPlayerLevel)
+    if (players[0].money >= Constants.expPurchasePrice && players[0].level < Constants.maxPlayerLevel)
       players[0].sm.PurchaseExp();
   }
 
@@ -260,7 +231,6 @@ public class GameManager : MonoBehaviour
     }
 
     timeBetwenRoundOccuring = false;
-    nextRoundStart = true;
     StartCoroutine("DuringRoundTimer");
     yield return null;
   }
@@ -274,6 +244,7 @@ public class GameManager : MonoBehaviour
     foreach (Player p in players)
     {
       p.roundOccuring = true;
+      p.RoundStart();
     }
 
     while (timer >= 0f)
@@ -283,16 +254,21 @@ public class GameManager : MonoBehaviour
       players[0].ui.UpdateTimer(timer);
     }
 
-    thisRoundEnd = true;
+    if(Constants.PveRounds.Contains(currentRound))
+    {
+      foreach(BattleManager bm in battleManagers)
+      {
+        bm.RemovePVEUnits();
+      }
+    }
+
     roundOccuring = false;
-    ReturnPlayersToPersonalBoards();
     StartCoroutine("PaddingTimer");
     yield return null;
   }
 
   private IEnumerator PaddingTimer()
   {
-    paddingTimeOccuring = true;
     float timer = Constants.paddingTime;
 
     foreach (Player p in players)
@@ -308,7 +284,6 @@ public class GameManager : MonoBehaviour
     }
 
     currentRound++;
-    paddingTimeOccuring = false;
     StartCoroutine("BetweenRoundTimer");
   }
 

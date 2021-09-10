@@ -5,10 +5,10 @@ using UnityEngine;
 public class EventManager : MonoBehaviour
 {
   public delegate void ExpPurchaseAction();
-  public static event ExpPurchaseAction expPurchaseEvent;
-  public void OnExpPurchase()
+  public static event ExpPurchaseAction expGainEvent;
+  public void OnExpGain()
   {
-    expPurchaseEvent();
+    expGainEvent();
   }
 
 }

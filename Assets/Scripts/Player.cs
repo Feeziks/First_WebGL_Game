@@ -32,14 +32,11 @@ public class Player
   public List<GameObject> benchChildren;
   public Dictionary<GameObject, GameObject> benchChildToBenchedUnitDict = new Dictionary<GameObject, GameObject>();
   public GameObject gameBoard;
-  private List<GameObject> gameBoardChildren;
+  private List<GameObject> gameBoardChildren = new List<GameObject>();
+  private Dictionary<Vector2Int, GameObject> placeableHexes = new Dictionary<Vector2Int, GameObject>();
 
   public ShopManager sm;
   public UIManager ui;
-
-  public Player()
-  {
-  }
 
   #region EXP And Money
   public void GainExp(int amount)
@@ -63,7 +60,9 @@ public class Player
 
   public void UpdateMoney(int amount)
   {
-
+    money += amount;
+    if(ui)
+      ui.UpdateMoney(money);
   }
 
   #endregion
@@ -72,7 +71,7 @@ public class Player
 
   public void UnitGained(SO_Unit toAdd, int unitLevel)
   {
-    //TODO: How to add a new unit
+    UpdateMoney(-1 * (int)toAdd.ID.GetTier());
 
     GameObject newUnit = GameObject.Instantiate(toAdd.unitPrefab[0]);
     newUnit.transform.parent = unitParent.transform;
@@ -89,6 +88,29 @@ public class Player
       UpgradeUnit(toAdd, unitLevel);
     }
 
+  }
+
+  public void SellUnit(GameObject unit)
+  {
+    //Calculate unit cost
+    int moneyReturned = 0;
+    Unit u = unit.GetComponent(typeof(Unit)) as Unit;
+    moneyReturned = (int)u.soUnit.ID.GetTier() * (int)Mathf.Pow(u.unitLevel + 1, Constants.unitsToLevelUp);
+
+    if(benchedUnits.Contains(unit))
+    {
+      benchedUnits.Remove(unit);
+      //TODO: Remove from the benchedunit Dictionary
+    }
+
+    if(deployedUnits.Contains(unit))
+    {
+      deployedUnits.Remove(unit);
+    }
+
+    //TODO: Return the correct number of cards to the card pool manager
+
+    GameObject.DestroyImmediate(unit);
   }
 
   private void PlaceUnitInFirstEmptyBenchPosition(GameObject thisUnit)
@@ -161,7 +183,7 @@ public class Player
       foreach(GameObject go in benchedUnitsToUpgradeWith)
       {
         benchedUnits.Remove(go);
-        benchChildToBenchedUnitDict.Remove(go);
+        benchChildToBenchedUnitDict[go] = null;
         gameObjectToUnitDict.Remove(go);
         GameObject.DestroyImmediate(go);
       }
@@ -215,7 +237,7 @@ public class Player
       foreach (GameObject go in benchedUnitsToUpgradeWith)
       {
         benchedUnits.Remove(go);
-        benchChildToBenchedUnitDict.Remove(go);
+        benchChildToBenchedUnitDict[go] = null;
         gameObjectToUnitDict.Remove(go);
         GameObject.DestroyImmediate(go);
       }
@@ -268,6 +290,99 @@ public class Player
       unitsToUpgradeAfterRoundFinishes.Clear();
       upgradeAfterRoundFinishes = false;
     }
+
+    GainExp(1);
+  }
+
+  public void RoundStart()
+  {
+    //Check how many units are deployed vs how many CAN be deployed
+    if(deployedUnits.Count < level)
+    {
+      int diff = level - deployedUnits.Count;
+      for(; diff > 0; diff--)
+      {
+        if(benchedUnits.Count > 0)
+        {
+          MoveUnitToBoard();
+        }
+      }
+    }
+
+    if(deployedUnits.Count > level)
+    {
+      for(int diff = deployedUnits.Count - level; diff > 0; diff--)
+      {
+        RemoveUnitFromBoard();
+      }
+    }
+  }
+
+  private void MoveUnitToBoard()
+  {
+    //Get the hex that our benched unit should move to
+    if(gameBoardChildren.Count == 0)
+    {
+      gameBoardChildren = GameManager.GetAllChildren(gameBoard);
+      InitPlaceableHexes();
+    }
+
+    foreach(Vector2Int idx in Constants.placeableHexesOrder)
+    {
+      GameObject hexToPlace = placeableHexes[idx];
+      bool empty = true;
+      foreach(GameObject go in deployedUnits)
+      {
+        if(go.transform.position.x == hexToPlace.transform.position.x && go.transform.position.z == hexToPlace.transform.position.z)
+        {
+          empty = false;
+          break;
+        }
+      }
+
+      if(empty)
+      {
+        GameObject thisUnit = benchedUnits[0];
+        benchedUnits.Remove(thisUnit);
+        benchChildToBenchedUnitDict[thisUnit] = null;
+        thisUnit.transform.position = hexToPlace.transform.position + new Vector3(0f, thisUnit.transform.localScale.y + 1f, 0f);
+        deployedUnits.Add(thisUnit);
+        break;
+      }
+    }
+  }
+
+  private void RemoveUnitFromBoard()
+  {
+    if(benchedUnits.Count == Constants.benchWidth)
+    {
+      GameObject thisUnit = deployedUnits[deployedUnits.Count - 1];
+      deployedUnits.Remove(thisUnit);
+      PlaceUnitInFirstEmptyBenchPosition(thisUnit);
+    }
+    else
+    {
+      GameObject thisUnit = deployedUnits[deployedUnits.Count - 1];
+      deployedUnits.Remove(thisUnit);
+      SellUnit(thisUnit);
+    }
+  }
+
+  private void InitPlaceableHexes()
+  {
+    for(int x = 0; x < Constants.boardWidth; x++)
+    {
+      for(int y = 0; y < 3; y++)
+      {
+        Vector2Int pos = new Vector2Int(x, y);
+        placeableHexes[pos] = gameBoardChildren[x + y];
+      }
+    }
+  }
+
+  public void BattleTick()
+  {
+
   }
 
   #endregion

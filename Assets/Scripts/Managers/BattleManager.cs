@@ -84,33 +84,20 @@ public class BattleManager
   //The only thing that does stuff tbh
   public void Tick()
   {
-    //Run the battle 
-
-    //Need to determine if the units already have a valid target
-
-    //If they have one out of range move towards them
-
-    //If they have one in range begin attacking
-
-    //If a unit has enough mana to cast and their ability is off cooldown cast it
-    //Abilities might need to change the units target
-  }
-
-  public void ReturnPlayers()
-  {
+    //Run the battle
     if(pvp)
     {
-      player1.ReturnToBoard();
-      player2.ReturnToBoard();
+      player1.BattleTick();
+      player2.BattleTick();
     }
-    if(pve)
+    else
     {
-      player1.ReturnToBoard();
-      RemovePVEUnits();
+      player1.BattleTick();
+      //TODO: PVE BattleTick
     }
   }
 
-  private void RemovePVEUnits()
+  public void RemovePVEUnits()
   {
     foreach(GameObject go in GameManager.GetAllChildren(gameBoard))
     {

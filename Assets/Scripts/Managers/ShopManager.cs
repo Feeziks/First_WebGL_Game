@@ -102,6 +102,7 @@ public class ShopManager
 
   public void RefreshShop()
   {
+    p.UpdateMoney(-1 * Constants.storeRefreshPrice);
     ReturnStoreUnits();
     ReactivateShopOptions();
     SO_Unit[] newUnitsForShop = CardPoolManager.instance.RequestNewCards(p);
@@ -118,14 +119,21 @@ public class ShopManager
     if (p.benchedUnits.Count == Constants.benchWidth)
       return;
 
-    p.UnitGained(p.storeUnits[index], 0);
-
-    if(shopOptions != null)
+    if (p.money >= (int)p.storeUnits[index].ID.GetTier())
     {
-      shopOptions[index].SetActive(false);
-    }
+      p.UnitGained(p.storeUnits[index], 0);
 
-    p.storeUnits[index] = null;
+      if (shopOptions != null)
+      {
+        shopOptions[index].SetActive(false);
+      }
+
+      p.storeUnits[index] = null;
+    }
+    else
+    {
+      //TODO: Tell user they do not have enough money for this unit
+    }
   }
 
   public void UpdatePlayerStoreUnits(SO_Unit[] units)
@@ -164,6 +172,7 @@ public class ShopManager
 
   public void PurchaseExp()
   {
+    p.UpdateMoney(-1 * Constants.expPurchasePrice);
     p.GainExp(1);
   }
 

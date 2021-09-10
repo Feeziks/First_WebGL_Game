@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IEndDragHandler
 {
+  public GameObject target;
+
   [Header("Some Data IDK")]
   public SO_Unit soUnit;
   public int unitLevel;
@@ -48,6 +50,15 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   #endregion
 
+  #region Fighting things
+
+  private void BattleTick()
+  {
+
+  }
+
+  #endregion
+
   #region Pointer Interfaces
 
   //Detect if a click occurs
@@ -56,6 +67,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //If the user Left clicks the unit do nothing for now
 
     //If the user right clicks the unit sell it (After checking if they have the permissions to sell that unit)
+    if(pointerEventData.button == PointerEventData.InputButton.Right)
+    {
+      owner.SellUnit(gameObject);
+    }
   }
 
   public void OnPointerEnter(PointerEventData eventData)
