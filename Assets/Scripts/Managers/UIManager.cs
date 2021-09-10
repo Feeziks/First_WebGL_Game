@@ -242,13 +242,13 @@ public class UIManager : MonoBehaviour
 
     ret += u.soUnit.unitToolTipText;
     ret += "\n";
-    ret += "Armor: " + u.soUnit.baseStats.baseArmor[u.unitLevel] + "\t";
-    ret += "Magic Resist: " + u.soUnit.baseStats.baseMagicResist[u.unitLevel] + "\n";
-    ret += "Attack Damage: " + u.soUnit.baseStats.baseAttackDamage[u.unitLevel] + "\t";
-    ret += "Attack Speed: " + u.soUnit.baseStats.baseAttackSpeed[u.unitLevel] + "\n";
-    ret += "Attack Range: " + u.soUnit.baseStats.baseAttackRange[u.unitLevel] + "\t";
-    ret += "Crit Chance: " + u.soUnit.baseStats.baseCritChance[u.unitLevel] + "\n";
-    ret += "Magic Damage: " + u.soUnit.baseStats.baseMagicDamage[u.unitLevel] + "\t";
+    ret += "Armor: "          + u.soUnit.baseStats.armor[u.unitLevel] + "\t";
+    ret += "Magic Resist: "   + u.soUnit.baseStats.magicResist[u.unitLevel] + "\n";
+    ret += "Attack Damage: "  + u.soUnit.baseStats.attackDamage[u.unitLevel] + "\t";
+    ret += "Attack Speed: "   + u.soUnit.baseStats.attackSpeed[u.unitLevel] + "\n";
+    ret += "Attack Range: "   + u.soUnit.baseStats.attackRange[u.unitLevel] + "\t";
+    ret += "Crit Chance: "    + u.soUnit.baseStats.critChance[u.unitLevel] + "\n";
+    ret += "Magic Damage: "   + u.soUnit.baseStats.magicDamage[u.unitLevel] + "\t";
 
     return ret;
   }

@@ -82,19 +82,40 @@ public class BattleManager
   #region Battle Methods
 
   //The only thing that does stuff tbh
-  public void Tick()
+  public bool Tick()
   {
+    bool player1AnyAlive = false;
+    bool player2AnyAlive = false;
+    bool pveAnyAlive = true;
     //Run the battle
     if(pvp)
     {
-      player1.BattleTick();
-      player2.BattleTick();
+      player1AnyAlive = player1.BattleTick();
+      player2AnyAlive = player2.BattleTick();
+
+      if(!player1AnyAlive)
+      {
+        player1.lastRoundResult = Constants.roundLost;
+        player2.lastRoundResult = Constants.roundWon;
+      }
+      else if(!player2AnyAlive)
+      {
+        player1.lastRoundResult = Constants.roundWon;
+        player2.lastRoundResult = Constants.roundLost;
+      }
+      else
+      {
+        
+      }
     }
     else
     {
-      player1.BattleTick();
+      player1AnyAlive = player1.BattleTick();
       //TODO: PVE BattleTick
     }
+
+    return player1AnyAlive & player2AnyAlive;
+
   }
 
   public void RemovePVEUnits()

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
   private bool tickUpdate = false;
   private bool roundOccuring = false;
+  private bool endRoundEarly = false;
   private bool timeBetwenRoundOccuring = true;
 
   private List<BattleManager> battleManagers = new List<BattleManager>();
@@ -70,17 +71,23 @@ public class GameManager : MonoBehaviour
   {
     if(roundOccuring)
     {
+      bool roundStillRunning = false;
       foreach(BattleManager bm in battleManagers)
       {
-        bm.Tick();
+        roundStillRunning |= bm.Tick();
       }
 
+      if(!roundStillRunning)
+      {
+        endRoundEarly = true;
+      }
     }
     else if(timeBetwenRoundOccuring)
     {
       //TODO: Do we need to do anything
     }
   }
+
   #endregion
 
   #region helpers
@@ -153,6 +160,8 @@ public class GameManager : MonoBehaviour
 
     List<GameObject> gameBoardChildren = GetAllChildren(gameBoard);
 
+    //TODO: This doesnt work on round 3 for some reason - seems like the X and Y values are backwards or something idk
+
     int index = (int)(pos.x + pos.y * Constants.boardWidth) + 2; // the + 2 accounts for the parents and stuff idk
 
     float xPos = gameBoardChildren[gameBoardChildren.Count - index].transform.position.x;
@@ -213,17 +222,26 @@ public class GameManager : MonoBehaviour
     timeBetwenRoundOccuring = true;
     float timer = Constants.timeBetweenRounds;
 
-    foreach(Player p in players)
-    {
-      p.RoundEnd();
-    }
-
     if (Constants.PveRounds.Contains(currentRound))
     {
       LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);
+      int idx = 0;
+      foreach (BattleManager bm in battleManagers)
+      {
+        bm.SetPlayer1(players[idx++]);
+        bm.SetPVE();
+      }
+    }
+    else
+    {
+      //TODO Determine which 2 players are in this fight
+      foreach(BattleManager bm in battleManagers)
+      {
+        bm.SetPVP();
+      }
     }
 
-    while (timer >= 0f)
+    while (timer >= 1f / Constants.tickRate)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;
@@ -247,11 +265,17 @@ public class GameManager : MonoBehaviour
       p.RoundStart();
     }
 
-    while (timer >= 0f)
+    while (timer >= 1f / Constants.tickRate)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;
       players[0].ui.UpdateTimer(timer);
+
+      if(endRoundEarly)
+      {
+        timer = 0f;
+        endRoundEarly = false; //Reset flag
+      }
     }
 
     if(Constants.PveRounds.Contains(currentRound))
@@ -274,9 +298,10 @@ public class GameManager : MonoBehaviour
     foreach (Player p in players)
     {
       p.roundOccuring = false;
+      p.RoundEnd();
     }
 
-    while (timer >= 0f)
+    while (timer >= 1f / Constants.tickRate)
     {
       yield return new WaitForSecondsRealtime(1f / Constants.tickRate);
       timer -= 1f / Constants.tickRate;

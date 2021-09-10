@@ -10,6 +10,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   [Header("Some Data IDK")]
   public SO_Unit soUnit;
   public int unitLevel;
+  public UnitStats currentStats;
   public UnitStatusType status;
   public Player owner;
   //TODO: Lots more
@@ -52,9 +53,21 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   #region Fighting things
 
-  private void BattleTick()
+  public bool BattleTick()
   {
+    if (currentStats.health[unitLevel] <= 0f)
+    {
+      Die();
+      return false;
+    }
 
+    return true;
+  }
+
+  private void Die()
+  {
+    //The unit has died
+    gameObject.SetActive(false);
   }
 
   #endregion
@@ -69,6 +82,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //If the user right clicks the unit sell it (After checking if they have the permissions to sell that unit)
     if(pointerEventData.button == PointerEventData.InputButton.Right)
     {
+      //Dont allow selling units mid fight
+      if (owner.roundOccuring && owner.deployedUnits.Contains(gameObject))
+        return;
+
       owner.SellUnit(gameObject);
     }
   }

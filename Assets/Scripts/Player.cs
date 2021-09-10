@@ -16,6 +16,10 @@ public class Player
   public int level;
   public int money;
   public bool roundOccuring;
+  public int lastRoundResult;
+  public List<int> roundHistory = new List<int>();
+  private int currentWinStreak = 0;
+  private int currentLossStreak = 0;
   private bool upgradeAfterRoundFinishes;
   private Dictionary<SO_Unit, int> unitsToUpgradeAfterRoundFinishes = new Dictionary<SO_Unit, int>();
 
@@ -93,14 +97,22 @@ public class Player
   public void SellUnit(GameObject unit)
   {
     //Calculate unit cost
-    int moneyReturned = 0;
     Unit u = unit.GetComponent(typeof(Unit)) as Unit;
-    moneyReturned = (int)u.soUnit.ID.GetTier() * (int)Mathf.Pow(u.unitLevel + 1, Constants.unitsToLevelUp);
+    int moneyReturned = Mathf.Max(Mathf.FloorToInt(Mathf.Pow(Constants.unitsToLevelUp, u.unitLevel) * (int)u.soUnit.ID.GetTier() * 3f/4f), 1);
+    UpdateMoney(moneyReturned);
 
     if(benchedUnits.Contains(unit))
     {
       benchedUnits.Remove(unit);
       //TODO: Remove from the benchedunit Dictionary
+      foreach(GameObject go in benchChildren)
+      {
+        if(benchChildToBenchedUnitDict[go] == unit)
+        {
+          benchChildToBenchedUnitDict[go] = null;
+          break;
+        }
+      }
     }
 
     if(deployedUnits.Contains(unit))
@@ -109,6 +121,15 @@ public class Player
     }
 
     //TODO: Return the correct number of cards to the card pool manager
+    int numCardToReturn = (int)Mathf.Pow(Constants.unitsToLevelUp, u.unitLevel);
+
+    for(; numCardToReturn > 0; numCardToReturn--)
+    {
+      CardPoolManager.instance.ReturnCard(u.soUnit);
+    }
+
+    if (maxLevelUnits.Contains(u.soUnit))
+      maxLevelUnits.Remove(u.soUnit);
 
     GameObject.DestroyImmediate(unit);
   }
@@ -292,6 +313,53 @@ public class Player
     }
 
     GainExp(1);
+
+    UpdateWinLossHistoryAndStreaks();
+
+    int moneyToEarn = 1; //Base gain is 1 gold; Win - Lose Streak values are in Constants; gain an additional 1 gold for every 5 gold you are holding as interest capped at 5
+    moneyToEarn += (int)Mathf.Min(money / 5f, 5); // Interest
+    if (currentWinStreak > 0)
+    {
+      moneyToEarn += Constants.winStreakMoneyGain[(int)Mathf.Min(currentWinStreak, 10)];
+    }
+    else if (currentLossStreak > 0)
+    {
+      moneyToEarn += Constants.lossStreakMoneyGain[(int)Mathf.Min(currentWinStreak, 10)];
+    }
+
+    UpdateMoney(moneyToEarn);
+  }
+
+  private void UpdateWinLossHistoryAndStreaks()
+  {
+    roundHistory.Add(lastRoundResult);
+    int streakLength = GetStreakLength();
+    //Check if we won or lost the last round
+    if (lastRoundResult == Constants.roundWon)
+    {
+      currentWinStreak = streakLength;
+      currentLossStreak = 0;
+    }
+    else if(lastRoundResult == Constants.roundLost)
+    {
+      currentWinStreak = 0;
+      currentLossStreak = streakLength;
+    }
+  }
+
+  private int GetStreakLength()
+  {
+    int ret = 0;
+    for(int i = roundHistory.Count - 1; i > 0; i--)
+    {
+      if (roundHistory[i] == lastRoundResult)
+      {
+        ret++;
+      }
+      else
+        break;
+    }
+    return ret;
   }
 
   public void RoundStart()
@@ -380,9 +448,16 @@ public class Player
     }
   }
 
-  public void BattleTick()
+  public bool BattleTick()
   {
+    bool anyAlive = false;
 
+    foreach(GameObject go in deployedUnits)
+    {
+      anyAlive |= gameObjectToUnitDict[go].BattleTick();
+    }
+
+    return anyAlive; 
   }
 
   #endregion

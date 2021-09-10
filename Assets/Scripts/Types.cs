@@ -49,27 +49,27 @@ public enum UnitTypes : int
 }
 
 [System.Serializable]
-public class UnitBaseStats
+public class UnitStats
 {
   [Header("Health and Mana")]
-  public float[] baseHealth = new float[Constants.maxUnitLevel];
-  public float[] baseHealthRegen = new float[Constants.maxUnitLevel];
-  public float[] baseMana = new float[Constants.maxUnitLevel];
-  public float[] baseManaRegen = new float[Constants.maxUnitLevel];
+  public float[] health = new float[Constants.maxUnitLevel];
+  public float[] healthRegen = new float[Constants.maxUnitLevel];
+  public float[] mana = new float[Constants.maxUnitLevel];
+  public float[] manaRegen = new float[Constants.maxUnitLevel];
 
   [Header("Defense")]
-  public float[] baseArmor = new float[Constants.maxUnitLevel];
-  public float[] baseMagicResist = new float[Constants.maxUnitLevel];
+  public float[] armor = new float[Constants.maxUnitLevel];
+  public float[] magicResist = new float[Constants.maxUnitLevel];
 
   [Header("Attack")]
-  public float[] baseAttackDamage = new float[Constants.maxUnitLevel];
-  public float[] baseAttackSpeed = new float[Constants.maxUnitLevel];
-  public int[] baseAttackRange = new int[Constants.maxUnitLevel];
-  public float[] baseCritChance = new float[Constants.maxUnitLevel];
+  public float[] attackDamage = new float[Constants.maxUnitLevel];
+  public float[] attackSpeed = new float[Constants.maxUnitLevel];
+  public int[]   attackRange = new int[Constants.maxUnitLevel];
+  public float[] critChance = new float[Constants.maxUnitLevel];
 
   [Header("Magic")]
-  public float[] baseMagicDamage = new float[Constants.maxUnitLevel];
-  public float[] baseManaGainOnHit = new float[Constants.maxUnitLevel];  
+  public float[] magicDamage = new float[Constants.maxUnitLevel];
+  public float[] manaGainOnHit = new float[Constants.maxUnitLevel];  
 }
 
 [System.Flags]

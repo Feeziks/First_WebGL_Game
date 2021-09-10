@@ -20,7 +20,7 @@ public class SO_Unit : ScriptableObject
   public Animator animator;
 
   [Header("Unit Stats")]
-  public UnitBaseStats baseStats;
+  public UnitStats baseStats;
 
   [Header("Audio")]
   public int audio;

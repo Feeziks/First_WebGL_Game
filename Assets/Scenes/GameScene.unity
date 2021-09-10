@@ -1935,7 +1935,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -1957,7 +1957,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -1979,7 +1979,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -2001,7 +2001,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -2023,7 +2023,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -2045,7 +2045,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -2067,7 +2067,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
@@ -2089,7 +2089,7 @@ MonoBehaviour:
     health: 100
     exp: 0
     level: 1
-    money: 10
+    money: 7
     roundOccuring: 0
     unitParent: {fileID: 0}
     deployedUnits: []
