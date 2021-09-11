@@ -15,6 +15,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   //TODO: Lots more
 
   [Header("Location")]
+  public GameObject thisBattleGameBoard;
   public Vector2Int hexAtRoundStart;
   public Vector2Int currentHex;
   public Vector2Int nextHex;
@@ -44,12 +45,12 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   private void Start()
   {
-    
+
   }
 
   private void Update()
   {
-    if(toolTip)
+    if (toolTip)
     {
       ui.EnableUnitToolTip(this);
     }
@@ -57,7 +58,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   private void FixedUpdate()
   {
-    
+
   }
 
   #endregion
@@ -105,7 +106,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     float thisDistance = 0f;
     float minDistance = float.MaxValue;
     float maxDistance = float.MinValue;
-    
+
     float thisHP = 0;
     float minHP = float.MaxValue;
     float maxHP = float.MinValue;
@@ -117,10 +118,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     switch (soUnit.targetingType)
     {
       case UnitTargetingType.closest:
-        foreach(GameObject go in enemyUnits)
+        foreach (GameObject go in enemyUnits)
         {
           thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
-          if(thisDistance < minDistance)
+          if (thisDistance < minDistance)
           {
             minDistance = thisDistance;
             newTarget = go;
@@ -128,10 +129,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         }
         break;
       case UnitTargetingType.furthest:
-        foreach(GameObject go in enemyUnits)
+        foreach (GameObject go in enemyUnits)
         {
           thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
-          if(thisDistance > maxDistance)
+          if (thisDistance > maxDistance)
           {
             maxDistance = thisDistance;
             newTarget = go;
@@ -139,7 +140,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         }
         break;
       case UnitTargetingType.lowestHp:
-        foreach(GameObject go in enemyUnits)
+        foreach (GameObject go in enemyUnits)
         {
           Unit u = go.GetComponent(typeof(Unit)) as Unit;
           thisHP = u.currentStats.health[unitLevel];
@@ -203,7 +204,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //Maybe we can get the gameboard hexes that are within range # tiles away and check if the distance between us and the target is less than the distance between us and the furthest hex or something
 
     int currentRange = currentStats.attackRange[unitLevel];
-    int distance = (int)(currentHex - targetUnit.currentHex).magnitude;
+    int distance = (int)Mathf.Abs((currentHex - targetUnit.currentHex).magnitude);
 
     if (distance <= currentRange)
       return true;
@@ -215,16 +216,80 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   {
     //TODO: Move the unit's game object along the gameboard hexes if we are not close enough to our target to attack it
     //This will involve some sort of path finding, not entirely sure how to implement that
+
+    Vector3 direction = target.transform.position - transform.position;
+    float currentDistance = Vector3.Distance(transform.position, target.transform.position);
+    float minDistance = float.MaxValue;
+    float thisDistance;
+
+    if (nextHex == currentHex)
+    {
+      //Get the closest hex in that direction which is not occluded
+      for (int x = -1; x <= 1; x += 2)
+      {
+        for (int y = -1; y <= 1; y += 2)
+        {
+          //Get the hex at this index
+          int hexIndex = currentHex.x + currentHex.y * Constants.boardWidth;
+          hexIndex += x + y * Constants.boardWidth;
+          if (hexIndex >= 0 && hexIndex < thisBattleGameBoard.transform.childCount)
+          {
+            GameObject hexGo = thisBattleGameBoard.transform.GetChild(hexIndex).gameObject;
+
+            //Check if the spot is occluded
+            bool occluded = false;
+            foreach (GameObject go in owner.deployedUnits)
+            {
+              if (go.transform.position.x == hexGo.transform.position.x && go.transform.position.z == hexGo.transform.position.z)
+              {
+                occluded = true;
+                break;
+              }
+            }
+            if (!occluded)
+            {
+              foreach (GameObject go in enemyUnits)
+              {
+                if (go.transform.position.x == hexGo.transform.position.x && go.transform.position.z == hexGo.transform.position.z)
+                {
+                  occluded = true;
+                  break;
+                }
+              }
+            }
+
+            if (occluded)
+              break;
+
+            //Check if this hex is in the right direction and if it is not occluded
+            thisDistance = Vector3.Distance(hexGo.transform.position, target.transform.position);
+            if (thisDistance < currentDistance && thisDistance < minDistance)
+            {
+              minDistance = thisDistance;
+              nextHex = new Vector2Int(currentHex.x + x, currentHex.y + y);
+            }
+          }
+        }
+      }
+    }
+
+    if(nextHex != currentHex)
+    {
+      //Move to the next position
+      Vector3 nextPosition = thisBattleGameBoard.transform.GetChild(nextHex.x + nextHex.y * Constants.boardWidth).position + new Vector3(0f, gameObject.transform.localScale.y + 1f, 0f);
+      transform.position = Vector3.Lerp(transform.position, nextPosition, Constants.timeToMoveHex);
+    }
+
   }
 
   private void AttackTarget()
   {
     //TODO: Create an attack timer that keeps track of our last attack time, and the interval between attacks
     //If the time that has lapsed since the last attack time is greater than the interval between attack times then perform a new attack
-    if(lastAttackTime + (1f / currentStats.attackSpeed[unitLevel]) >= Time.realtimeSinceStartup)
+    if (lastAttackTime + (1f / currentStats.attackSpeed[unitLevel]) >= Time.realtimeSinceStartup)
     {
       //Do the attack
-      if(target)
+      if (target)
       {
         Dictionary<AttackTypes, float> thisAttackDamageByTypeDict = new Dictionary<AttackTypes, float>();
 
@@ -248,14 +313,14 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
         //Reset our attack timer and apply any on hit affects to ourselves (life steal, stat change etc)
       }
-    }    
+    }
   }
 
   private void CastAbility()
   {
-    if(lastAbilityTime + (1f / currentStats.abilityCooldown[unitLevel]) > Time.realtimeSinceStartup)
+    if (lastAbilityTime + (1f / currentStats.abilityCooldown[unitLevel]) > Time.realtimeSinceStartup)
     {
-      if(target)
+      if (target)
       {
 
         lastAbilityTime = Time.realtimeSinceStartup;
@@ -271,10 +336,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   public void RecieveDamge(UnitDamageDealtType data)
   {
-    foreach(KeyValuePair<AttackTypes, float> kvp in data.damageByType)
+    foreach (KeyValuePair<AttackTypes, float> kvp in data.damageByType)
     {
       float thisDmgAmount = kvp.Value * data.damageValue;
-      switch(kvp.Key)
+      switch (kvp.Key)
       {
         case AttackTypes.physical:
           thisDmgAmount = ApplyArmor(thisDmgAmount);
@@ -320,7 +385,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //If the user Left clicks the unit do nothing for now
 
     //If the user right clicks the unit sell it (After checking if they have the permissions to sell that unit)
-    if(pointerEventData.button == PointerEventData.InputButton.Right)
+    if (pointerEventData.button == PointerEventData.InputButton.Right)
     {
       //Dont allow selling units mid fight
       if (owner.roundOccuring && owner.deployedUnits.Contains(gameObject))
@@ -336,14 +401,14 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     ui.EnableUnitToolTip(this);
     toolTip = true;
 
-    if(!dragging)
+    if (!dragging)
       positionPreDrag = transform.position;
 
-    if(owner.benchedUnits.Contains(gameObject))
+    if (owner.benchedUnits.Contains(gameObject))
     {
-      foreach(KeyValuePair<GameObject, GameObject> kvp in owner.benchChildToBenchedUnitDict)
+      foreach (KeyValuePair<GameObject, GameObject> kvp in owner.benchChildToBenchedUnitDict)
       {
-        if(kvp.Value == gameObject)
+        if (kvp.Value == gameObject)
         {
           benchGameObjectPreDrag = kvp.Key;
           break;
@@ -362,10 +427,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   public void OnDrag(PointerEventData eventData)
   {
     //Begin Moving the unit around if we have the permission to do so
-    if(owner.playerId == 0 && eventData.button == 0)
+    if (owner.playerId == 0 && eventData.button == 0)
     {
 
-      if(owner.roundOccuring)
+      if (owner.roundOccuring)
       {
         if (owner.deployedUnits.Contains(gameObject))
           return;
@@ -384,7 +449,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             bool occluded = false;
             foreach (GameObject go in GameManager.GetAllChildren(owner.unitParent))
             {
-              if(go.transform.position.x == hit.transform.position.x && go.transform.position.z == hit.transform.position.z)
+              if (go.transform.position.x == hit.transform.position.x && go.transform.position.z == hit.transform.position.z)
               {
                 occluded = true;
                 break;
@@ -412,7 +477,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       if (owner.deployedUnits.Contains(gameObject))
         return;
 
-      if(dragTarget.transform.parent.gameObject == owner.gameBoard)
+      if (dragTarget.transform.parent.gameObject == owner.gameBoard)
       {
         transform.position = positionPreDrag;
         return;
@@ -435,7 +500,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       SetRoundStartHex(dragTarget);
     }
 
-    if(dragTarget.transform.parent.gameObject == owner.bench)
+    if (dragTarget.transform.parent.gameObject == owner.bench)
     {
       owner.benchedUnits.Add(gameObject);
       owner.benchChildToBenchedUnitDict[dragTarget.gameObject] = gameObject;
@@ -448,7 +513,6 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   #endregion
 
   #region Helpers
-
   public void SetRoundStartHex(GameObject hexGO)
   {
     int idx = hexGO.transform.GetSiblingIndex();
@@ -457,6 +521,11 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     hexAtRoundStart = new Vector2Int(xPos, yPos);
     currentHex = hexAtRoundStart;
     nextHex = hexAtRoundStart;
+  }
+
+  public void SetStatsAtRoundStart()
+  {
+    currentStats = soUnit.baseStats;
   }
 
   #endregion

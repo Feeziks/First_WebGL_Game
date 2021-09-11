@@ -6,6 +6,8 @@ public class BattleManager
 {
   #region Properties
 
+  public bool enabledThisRound;
+
   private GameObject gameBoard;
   private Player player1;
   private Player player2;
@@ -57,6 +59,16 @@ public class BattleManager
     pve = true;
   }
 
+  public GameObject GetGameBoard()
+  {
+    return gameBoard;
+  }
+
+  public void SetGameBoard(GameObject board)
+  {
+    gameBoard = board;
+  }
+
   public List<GameObject> GetPVEUnits()
   {
     if (pveUnitsThisRound != null && pveUnitsThisRound.Count != 0)
@@ -84,6 +96,14 @@ public class BattleManager
     }
   }
 
+  public void SetPVEGameBoard()
+  {
+    foreach(GameObject go in GetPVEUnits())
+    {
+      Unit thisUnit = go.GetComponent(typeof(Unit)) as Unit;
+      thisUnit.thisBattleGameBoard = gameBoard;
+    }
+  }
   #endregion
 
   #region Constructors

@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
   public Player[] players;
+  public int numPlayersAlive;
   public GameObject[] playerOneShopOptions;
 
   public GameObject gameBoardParent;
@@ -42,6 +43,8 @@ public class GameManager : MonoBehaviour
       unitParent.transform.parent = transform;
       p.unitParent = unitParent;
     }
+
+    numPlayersAlive = Constants.numPlayers;
   }
 
   private void Start()
@@ -184,6 +187,20 @@ public class GameManager : MonoBehaviour
     }
   }
 
+  private List<Player> GetPlayersForThisRound()
+  {
+    List<Player> ret = new List<Player>();
+
+    foreach(Player p in players)
+    {
+      if (p.health > 0)
+      {
+        ret.Add(p);
+      }
+    }
+    return ret;
+  }
+
   #endregion
 
   #region Buttons
@@ -237,10 +254,37 @@ public class GameManager : MonoBehaviour
     }
     else
     {
-      //TODO Determine which 2 players are in this fight
+      int numFights = Mathf.CeilToInt((float)numPlayersAlive / 2f);
+      List<Player> playersForThisRound = GetPlayersForThisRound();
+
+      //TODO: How to handle an odd number of players remaining
+
       foreach(BattleManager bm in battleManagers)
       {
-        bm.SetPVP();
+        if (numFights > 0)
+        {
+          bm.SetPVP();
+          bm.enabledThisRound = true;
+          int player1Index = (int)Random.Range(0f, playersForThisRound.Count - 1);
+          Player p1 = playersForThisRound[player1Index];
+          playersForThisRound.Remove(p1);
+          int player2Index = (int)Random.Range(0f, playersForThisRound.Count - 1);
+          Player p2 = playersForThisRound[player2Index];
+          playersForThisRound.Remove(p2);
+
+          bm.SetPlayer1(p1);
+          bm.SetPlayer2(p2);
+          bm.SetGameBoard(p1.gameBoard);
+
+          p1.bm = bm;
+          p2.bm = bm;
+
+          numFights--;
+        }
+        else
+        {
+          bm.enabledThisRound = false;
+        }
       }
     }
 
@@ -269,9 +313,12 @@ public class GameManager : MonoBehaviour
 
     if(Constants.PveRounds.Contains(currentRound))
     {
+      int idx = 0;
       foreach(BattleManager bm in battleManagers)
       {
+        bm.SetGameBoard(players[idx++].gameBoard);
         bm.SetPVEEnemyUnits();
+        bm.SetPVEGameBoard();
       }
     }
 

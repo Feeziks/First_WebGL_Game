@@ -1937,6 +1937,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -1959,6 +1961,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -1981,6 +1985,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2003,6 +2009,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2025,6 +2033,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2047,6 +2057,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2069,6 +2081,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2091,6 +2105,8 @@ MonoBehaviour:
     level: 1
     money: 7
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []
@@ -2105,6 +2121,7 @@ MonoBehaviour:
     benchChildren: []
     gameBoard: {fileID: 0}
     ui: {fileID: 0}
+  numPlayersAlive: 0
   playerOneShopOptions:
   - {fileID: 1477608733}
   - {fileID: 1515966002}
@@ -3707,6 +3724,8 @@ MonoBehaviour:
     level: 0
     money: 0
     roundOccuring: 0
+    lastRoundResult: 0
+    roundHistory: 
     unitParent: {fileID: 0}
     deployedUnits: []
     benchedUnits: []

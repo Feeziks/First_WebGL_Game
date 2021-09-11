@@ -67,6 +67,8 @@ public static class Constants
   public static int benchWidth = 9;
   public static int benchHeight = 1;
 
+  public static float timeToMoveHex = 0.3f;
+
   /*
    * I dont know what to call these
    */

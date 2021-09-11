@@ -151,7 +151,7 @@ public class Player
       if(benchChildToBenchedUnitDict[go] == null)
       {
         benchChildToBenchedUnitDict[go] = thisUnit;
-        thisUnit.transform.position = go.transform.position + new Vector3(0f, thisUnit.transform.localScale.y / 2f + 1f, 0f);
+        thisUnit.transform.position = go.transform.position + new Vector3(0f, thisUnit.transform.localScale.y + 1f, 0f);
         return;
       }
     }
@@ -330,9 +330,11 @@ public class Player
 
     UpdateMoney(moneyToEarn);
 
-    //TODO: Return All units back to their deployed locations
-
-    //TODO: Return any units that died
+    foreach(GameObject go in deployedUnits)
+    {
+      go.SetActive(true);
+      go.transform.position = HexIndexToGameBoard(gameObjectToUnitDict[go].hexAtRoundStart, gameBoard, false) + new Vector3(0f, go.transform.localScale.y + 1f, 0f);
+    }
   }
 
   private void UpdateWinLossHistoryAndStreaks()
@@ -396,6 +398,16 @@ public class Player
     {
       gameObjectToUnitDict[go].enemyUnits = enemyUnits;
     }
+
+    if(bm.GetGameBoard() != gameBoard)
+    {
+      MoveUnitsToThisRoundsBoard();
+    }
+
+    foreach(GameObject go in deployedUnits)
+    {
+      gameObjectToUnitDict[go].thisBattleGameBoard = bm.GetGameBoard();
+    }
   }
 
   private List<GameObject> GetEnemyUnitsList()
@@ -453,6 +465,37 @@ public class Player
         break;
       }
     }
+  }
+
+  private void MoveUnitsToThisRoundsBoard()
+  {
+    foreach(GameObject go in deployedUnits)
+    {
+      Vector2Int hex = gameObjectToUnitDict[go].hexAtRoundStart;
+      go.transform.position = HexIndexToGameBoard(hex, bm.GetGameBoard(), true);
+      go.transform.position += new Vector3(0f, go.transform.localScale.y + 1f, 0f);
+    }
+  }
+
+  private Vector3 HexIndexToGameBoard(Vector2Int hex, GameObject board, bool flip)
+  {
+    Vector3 ret = Vector3.zero;
+
+    int index = 0;
+
+    if(flip)
+    {
+      index = board.transform.childCount - (hex.x + hex.y * Constants.boardWidth);
+    }
+    else
+    {
+      index = hex.x + hex.y * Constants.boardWidth;
+    }
+    
+    GameObject boardHex = board.transform.GetChild(index).gameObject;
+
+    ret = boardHex.transform.position;
+    return ret;
   }
 
   private void RemoveUnitFromBoard()
