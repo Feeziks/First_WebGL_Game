@@ -138,6 +138,7 @@ public class GameManager : MonoBehaviour
         thisEnemyUnit.soUnit = board.units[idx];
         thisEnemyUnit.unitLevel = board.level[idx];
         thisEnemyUnit.status = UnitStatusType.normal;
+        thisEnemyUnit.SetRoundStartHex(playerBoard.transform.GetChild(playerBoard.transform.childCount - (int)(board.positions[idx].x + board.positions[idx].y * Constants.boardWidth)).gameObject);
 
         enemyUnits.Add(thisEnemy);
       }
@@ -228,8 +229,10 @@ public class GameManager : MonoBehaviour
       int idx = 0;
       foreach (BattleManager bm in battleManagers)
       {
+        players[idx].bm = bm;
         bm.SetPlayer1(players[idx++]);
         bm.SetPVE();
+        bm.pveUnitsThisRound = bm.GetPVEUnits();
       }
     }
     else
@@ -258,11 +261,18 @@ public class GameManager : MonoBehaviour
     roundOccuring = true;
     float timer = Constants.roundTimeout;
 
-    //TODO: Round ends early if all enemies on all gameboard are defeated
     foreach (Player p in players)
     {
       p.roundOccuring = true;
       p.RoundStart();
+    }
+
+    if(Constants.PveRounds.Contains(currentRound))
+    {
+      foreach(BattleManager bm in battleManagers)
+      {
+        bm.SetPVEEnemyUnits();
+      }
     }
 
     while (timer >= 1f / Constants.tickRate)

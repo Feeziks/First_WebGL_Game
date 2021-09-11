@@ -22,6 +22,10 @@ public class SO_Unit : ScriptableObject
   [Header("Unit Stats")]
   public UnitStats baseStats;
 
+  [Header("Attack Data")]
+  public UnitTargetingType targetingType;
+  public AttackTypeToFloat[] attackTypes = new AttackTypeToFloat[Constants.maxUnitLevel];
+
   [Header("Audio")]
   public int audio;
 }

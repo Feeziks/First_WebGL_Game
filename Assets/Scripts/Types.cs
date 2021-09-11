@@ -70,6 +70,14 @@ public class UnitStats
   [Header("Magic")]
   public float[] magicDamage = new float[Constants.maxUnitLevel];
   public float[] manaGainOnHit = new float[Constants.maxUnitLevel];  
+  public float[] abilityCooldown = new float[Constants.maxUnitLevel];
+}
+
+[System.Serializable]
+public class AttackTypeToFloat
+{
+  public AttackTypes[] attackType = new AttackTypes[3];
+  public float[] percent = new float[3];
 }
 
 [System.Flags]
@@ -116,6 +124,40 @@ public enum ItemTier : int
   uncommon = ItemTier.common + 1,
   rare = ItemTier.uncommon + 1,
   legendary = ItemTier.rare + 1
+}
+
+#endregion
+
+#region Battle related Types
+
+[System.Serializable]
+public enum UnitTargetingType : int
+{
+  closest = 0,
+  furthest = 1,
+  highestHp = 2,
+  lowestHp = 3,
+  highestDps = 4,
+  lowestDps = 5
+}
+
+public enum AttackTypes
+{
+  physical,
+  magical,
+  tru
+}
+
+public class UnitDamageDealtType
+{
+  public float damageValue;
+  public Dictionary<AttackTypes, float> damageByType = new Dictionary<AttackTypes, float>();
+
+  public UnitDamageDealtType(float dVal, Dictionary<AttackTypes, float> dByType)
+  {
+    damageValue = dVal;
+    damageByType = dByType;
+  }
 }
 
 #endregion

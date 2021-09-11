@@ -26,49 +26,69 @@ MonoBehaviour:
   - {fileID: 7723468129508306002, guid: 372639450503c87418375a702bcbb130, type: 3}
   animator: {fileID: 0}
   baseStats:
-    baseHealth:
-    - 100
-    - 200
-    - 300
-    baseHealthRegen:
+    health:
     - 0
+    - 0
+    - 0
+    healthRegen:
+    - 0
+    - 0
+    - 0
+    mana:
+    - 0
+    - 0
+    - 0
+    manaRegen:
+    - 0
+    - 0
+    - 0
+    armor:
+    - 0
+    - 0
+    - 0
+    magicResist:
+    - 0
+    - 0
+    - 0
+    attackDamage:
+    - 0
+    - 0
+    - 0
+    attackSpeed:
+    - 0
+    - 0
+    - 0
+    attackRange: 000000000000000000000000
+    critChance:
+    - 0
+    - 0
+    - 0
+    magicDamage:
+    - 0
+    - 0
+    - 0
+    manaGainOnHit:
+    - 0
+    - 0
+    - 0
+    abilityCooldown:
+    - 0
+    - 0
+    - 0
+  attackTypes:
+  - attackType: 000000000100000002000000
+    percent:
     - 1
-    - 5
-    baseMana:
-    - 50
-    - 40
-    - 30
-    baseManaRegen:
     - 0
     - 0
-    - 0
-    baseArmor:
-    - 10
-    - 15
-    - 20
-    baseMagicResist:
-    - 0
-    - 5
-    - 10
-    baseAttackDamage:
-    - 20
-    - 30
-    - 40
-    baseAttackSpeed:
+  - attackType: 000000000100000002000000
+    percent:
     - 1
-    - 1.5
-    - 2
-    baseAttackRange: 010000000100000001000000
-    baseCritChance:
-    - 0.01
-    - 0.05
-    - 0.1
-    baseMagicDamage:
-    - 10
-    - 20
-    - 30
-    baseManaGainOnHit:
-    - 5
-    - 5
-    - 5
+    - 0
+    - 0
+  - attackType: 000000000100000002000000
+    percent:
+    - 1
+    - 0
+    - 0
   audio: 0

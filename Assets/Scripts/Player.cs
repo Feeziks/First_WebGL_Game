@@ -41,6 +41,7 @@ public class Player
 
   public ShopManager sm;
   public UIManager ui;
+  public BattleManager bm;
 
   #region EXP And Money
   public void GainExp(int amount)
@@ -328,6 +329,10 @@ public class Player
     }
 
     UpdateMoney(moneyToEarn);
+
+    //TODO: Return All units back to their deployed locations
+
+    //TODO: Return any units that died
   }
 
   private void UpdateWinLossHistoryAndStreaks()
@@ -384,6 +389,35 @@ public class Player
         RemoveUnitFromBoard();
       }
     }
+
+    //Tell our units about the enemy units
+    List<GameObject> enemyUnits = GetEnemyUnitsList();
+    foreach(GameObject go in deployedUnits)
+    {
+      gameObjectToUnitDict[go].enemyUnits = enemyUnits;
+    }
+  }
+
+  private List<GameObject> GetEnemyUnitsList()
+  {
+    List<GameObject> ret = new List<GameObject>();
+
+    if (bm.IsPVP())
+    {
+      Player[] players = bm.GetPlayers();
+      Player opponent = players[0] == this ? players[1] : players[0];
+
+      foreach (GameObject go in opponent.deployedUnits)
+      {
+        ret.Add(go);
+      }
+    }
+    else
+    {
+      ret = bm.GetPVEUnits();
+    }
+
+    return ret;
   }
 
   private void MoveUnitToBoard()
@@ -415,6 +449,7 @@ public class Player
         benchChildToBenchedUnitDict[thisUnit] = null;
         thisUnit.transform.position = hexToPlace.transform.position + new Vector3(0f, thisUnit.transform.localScale.y + 1f, 0f);
         deployedUnits.Add(thisUnit);
+        gameObjectToUnitDict[thisUnit].SetRoundStartHex(hexToPlace);
         break;
       }
     }

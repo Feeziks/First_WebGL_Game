@@ -5,15 +5,26 @@ using UnityEngine.EventSystems;
 
 public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IEndDragHandler
 {
-  public GameObject target;
-
   [Header("Some Data IDK")]
   public SO_Unit soUnit;
   public int unitLevel;
   public UnitStats currentStats;
   public UnitStatusType status;
   public Player owner;
+  public List<GameObject> enemyUnits;
   //TODO: Lots more
+
+  [Header("Location")]
+  public Vector2Int hexAtRoundStart;
+  public Vector2Int currentHex;
+  public Vector2Int nextHex;
+
+  [Header("Attack Information")]
+  public float lastAttackTime;
+  public float lastAbilityTime;
+  public GameObject target;
+  public Unit targetUnit;
+  public float DPS;
 
   private UIManager ui;
   private bool toolTip;
@@ -55,19 +66,248 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   public bool BattleTick()
   {
-    if (currentStats.health[unitLevel] <= 0f)
+    if (enemyUnits.Count > 0)
     {
-      Die();
-      return false;
+      if (status != UnitStatusType.stunned)
+      {
+        if (target == null)
+        {
+          FindTarget();
+        }
+
+        if (TargetInRange())
+        {
+          AttackTarget();
+          if (currentStats.mana[unitLevel] >= soUnit.baseStats.mana[unitLevel])
+          {
+            CastAbility();
+          }
+        }
+        else
+        {
+          ApproachTarget();
+        }
+      }
     }
 
     return true;
+  }
+
+  private void FindTarget()
+  {
+    //TODO: Loop over enemy deployed units - Find closest enemy? or unit has some sort of targeting type (Lowest hp, highest hp, closest, furthest, etc)
+    //target = newTarget;
+    //targetUnit = newTarget.GetComponent(typeof(Unit)) as Unit;
+
+    GameObject newTarget = null;
+    Unit newTargetUnit = null;
+
+    float thisDistance = 0f;
+    float minDistance = float.MaxValue;
+    float maxDistance = float.MinValue;
+    
+    float thisHP = 0;
+    float minHP = float.MaxValue;
+    float maxHP = float.MinValue;
+
+    float thisDPS = 0;
+    float minDPS = float.MaxValue;
+    float maxDPS = float.MinValue;
+
+    switch (soUnit.targetingType)
+    {
+      case UnitTargetingType.closest:
+        foreach(GameObject go in enemyUnits)
+        {
+          thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
+          if(thisDistance < minDistance)
+          {
+            minDistance = thisDistance;
+            newTarget = go;
+          }
+        }
+        break;
+      case UnitTargetingType.furthest:
+        foreach(GameObject go in enemyUnits)
+        {
+          thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
+          if(thisDistance > maxDistance)
+          {
+            maxDistance = thisDistance;
+            newTarget = go;
+          }
+        }
+        break;
+      case UnitTargetingType.lowestHp:
+        foreach(GameObject go in enemyUnits)
+        {
+          Unit u = go.GetComponent(typeof(Unit)) as Unit;
+          thisHP = u.currentStats.health[unitLevel];
+          if (thisHP < minHP)
+          {
+            minHP = thisHP;
+            newTarget = go;
+          }
+        }
+        break;
+      case UnitTargetingType.highestHp:
+        foreach (GameObject go in enemyUnits)
+        {
+          Unit u = go.GetComponent(typeof(Unit)) as Unit;
+          thisHP = u.currentStats.health[unitLevel];
+          if (thisHP > maxHP)
+          {
+            maxHP = thisHP;
+            newTarget = go;
+          }
+        }
+        break;
+      case UnitTargetingType.highestDps:
+        foreach (GameObject go in enemyUnits)
+        {
+          Unit u = go.GetComponent(typeof(Unit)) as Unit;
+          thisDPS = u.DPS;
+          if (thisDPS < minDPS)
+          {
+            minDPS = thisDPS;
+            newTarget = go;
+          }
+        }
+        break;
+      case UnitTargetingType.lowestDps:
+        foreach (GameObject go in enemyUnits)
+        {
+          Unit u = go.GetComponent(typeof(Unit)) as Unit;
+          thisDPS = u.DPS;
+          if (thisDPS > maxDPS)
+          {
+            maxDPS = thisDPS;
+            newTarget = go;
+          }
+        }
+        break;
+      default:
+        Debug.Log("Undefined unit targeting type for unit" + soUnit.unitName);
+        break;
+    }
+
+    newTargetUnit = newTarget.GetComponent(typeof(Unit)) as Unit;
+
+    target = newTarget;
+    targetUnit = newTargetUnit;
+  }
+
+  private bool TargetInRange()
+  {
+    //TODO: Check if the targeted unit is within our range - range is defined in hexes how to get this to work in the game object transform level?
+    //Maybe we can get the gameboard hexes that are within range # tiles away and check if the distance between us and the target is less than the distance between us and the furthest hex or something
+
+    int currentRange = currentStats.attackRange[unitLevel];
+    int distance = (int)(currentHex - targetUnit.currentHex).magnitude;
+
+    if (distance <= currentRange)
+      return true;
+
+    return false;
+  }
+
+  private void ApproachTarget()
+  {
+    //TODO: Move the unit's game object along the gameboard hexes if we are not close enough to our target to attack it
+    //This will involve some sort of path finding, not entirely sure how to implement that
+  }
+
+  private void AttackTarget()
+  {
+    //TODO: Create an attack timer that keeps track of our last attack time, and the interval between attacks
+    //If the time that has lapsed since the last attack time is greater than the interval between attack times then perform a new attack
+    if(lastAttackTime + (1f / currentStats.attackSpeed[unitLevel]) >= Time.realtimeSinceStartup)
+    {
+      //Do the attack
+      if(target)
+      {
+        Dictionary<AttackTypes, float> thisAttackDamageByTypeDict = new Dictionary<AttackTypes, float>();
+
+        thisAttackDamageByTypeDict[AttackTypes.physical] = soUnit.attackTypes[unitLevel].percent[0];
+        thisAttackDamageByTypeDict[AttackTypes.magical] = soUnit.attackTypes[unitLevel].percent[1];
+        thisAttackDamageByTypeDict[AttackTypes.tru] = soUnit.attackTypes[unitLevel].percent[2];
+
+        //Check for a crit
+        float damageValue = currentStats.attackDamage[unitLevel];
+        if (Random.Range(0f, 1f) < currentStats.critChance[unitLevel])
+        {
+          damageValue *= 2f;
+        }
+
+        UnitDamageDealtType thisAttackDamage = new UnitDamageDealtType(damageValue, thisAttackDamageByTypeDict);
+        targetUnit.RecieveDamge(thisAttackDamage);
+
+        currentStats.mana[unitLevel] = Mathf.Min(currentStats.mana[unitLevel] + currentStats.manaGainOnHit[unitLevel], soUnit.baseStats.mana[unitLevel]);
+
+        lastAttackTime = Time.realtimeSinceStartup;
+
+        //Reset our attack timer and apply any on hit affects to ourselves (life steal, stat change etc)
+      }
+    }    
+  }
+
+  private void CastAbility()
+  {
+    if(lastAbilityTime + (1f / currentStats.abilityCooldown[unitLevel]) > Time.realtimeSinceStartup)
+    {
+      if(target)
+      {
+
+        lastAbilityTime = Time.realtimeSinceStartup;
+      }
+    }
   }
 
   private void Die()
   {
     //The unit has died
     gameObject.SetActive(false);
+  }
+
+  public void RecieveDamge(UnitDamageDealtType data)
+  {
+    foreach(KeyValuePair<AttackTypes, float> kvp in data.damageByType)
+    {
+      float thisDmgAmount = kvp.Value * data.damageValue;
+      switch(kvp.Key)
+      {
+        case AttackTypes.physical:
+          thisDmgAmount = ApplyArmor(thisDmgAmount);
+          currentStats.health[unitLevel] -= thisDmgAmount;
+          break;
+        case AttackTypes.magical:
+          thisDmgAmount = ApplyMagicResist(thisDmgAmount);
+          currentStats.health[unitLevel] -= thisDmgAmount;
+          break;
+        case AttackTypes.tru:
+          //True damage cannot be blocked so apply it directly
+          currentStats.health[unitLevel] -= thisDmgAmount;
+          break;
+        default:
+          Debug.Log("Undefined attack type used in an attack on unit" + gameObject.name);
+          break;
+      }
+    }
+
+    if (currentStats.health[unitLevel] <= 0f)
+    {
+      Die();
+    }
+  }
+
+  private float ApplyArmor(float damageAmount)
+  {
+    return (100f) / (100f + currentStats.armor[unitLevel]);
+  }
+
+  private float ApplyMagicResist(float damageAmount)
+  {
+    return (100f) / (100f + currentStats.magicResist[unitLevel]);
   }
 
   #endregion
@@ -192,6 +432,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     if (dragTarget.transform.parent.gameObject == owner.gameBoard)
     {
       owner.deployedUnits.Add(gameObject);
+      SetRoundStartHex(dragTarget);
     }
 
     if(dragTarget.transform.parent.gameObject == owner.bench)
@@ -203,6 +444,20 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     dragTarget = null;
   }
 
+
+  #endregion
+
+  #region Helpers
+
+  public void SetRoundStartHex(GameObject hexGO)
+  {
+    int idx = hexGO.transform.GetSiblingIndex();
+    int xPos = (int)(idx % Constants.boardWidth);
+    int yPos = (int)(idx / Constants.boardWidth);
+    hexAtRoundStart = new Vector2Int(xPos, yPos);
+    currentHex = hexAtRoundStart;
+    nextHex = hexAtRoundStart;
+  }
 
   #endregion
 }
