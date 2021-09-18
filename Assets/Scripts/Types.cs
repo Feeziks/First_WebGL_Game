@@ -39,13 +39,19 @@ public enum UnitTier : int
 
 public enum UnitClasses : int
 {
-  class_1,
-  class_2
+  Sword_Dude,
+  Shield_Dude,
+  Fist_Dude,
+  Bow_Dude,
+  Gun_Dude,
+  Wizard_Dude
 }
 public enum UnitTypes : int
 {
-  type_1,
-  type_2
+  Druid,
+  Dwarf,
+  Elemental,
+  Zombie
 }
 
 [System.Serializable]
@@ -158,6 +164,17 @@ public class UnitDamageDealtType
     damageValue = dVal;
     damageByType = dByType;
   }
+}
+
+#endregion
+
+#region General Types
+
+public enum RoundState
+{
+  roundOccuring,
+  paddingTime,
+  timeBetweenRounds
 }
 
 #endregion

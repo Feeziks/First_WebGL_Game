@@ -47,8 +47,11 @@ public static class Constants
   public static Dictionary<int, SO_PVE_Board_State> pveRoundToBoardStateDict;
 
   public static float paddingTime = 3f;
+  public static string paddingTimeString = "Cleaning up...";
   public static float timeBetweenRounds = 11f;
+  public static string timeBetweenRoundsString = "Prepare For Battle!";
   public static float roundTimeout = 10f;
+  public static string roundOccuringString = "Battling!";
 
   public static LayerMask hexGridLayer = 8;
 
@@ -67,7 +70,7 @@ public static class Constants
   public static int benchWidth = 9;
   public static int benchHeight = 1;
 
-  public static float timeToMoveHex = 0.3f;
+  public static float timeToMoveHex = 0.6f;
 
   /*
    * I dont know what to call these

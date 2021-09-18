@@ -80,7 +80,7 @@ public class Player
 
     GameObject newUnit = GameObject.Instantiate(toAdd.unitPrefab[0]);
     newUnit.transform.parent = unitParent.transform;
-    gameObjectToUnitDict[newUnit] = newUnit.GetComponent(typeof(Unit)) as Unit;
+    gameObjectToUnitDict[newUnit] = newUnit.AddComponent(typeof(Unit)) as Unit;
     gameObjectToUnitDict[newUnit].soUnit = toAdd;
     gameObjectToUnitDict[newUnit].unitLevel = unitLevel;
     gameObjectToUnitDict[newUnit].status = UnitStatusType.normal;
@@ -462,6 +462,7 @@ public class Player
         thisUnit.transform.position = hexToPlace.transform.position + new Vector3(0f, thisUnit.transform.localScale.y + 1f, 0f);
         deployedUnits.Add(thisUnit);
         gameObjectToUnitDict[thisUnit].SetRoundStartHex(hexToPlace);
+        gameObjectToUnitDict[thisUnit].SetStatsAtRoundStart();
         break;
       }
     }

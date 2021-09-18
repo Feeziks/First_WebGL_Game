@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ced05c294fa986d4fbcd96484913abe8, type: 3}
-  m_Name: Basic_Minion_Unit
+  m_Name: SO_Air_Elemental
   m_EditorClassIdentifier: 
-  unitName: Basic Minion
+  unitName: Air Elemental
   ID:
     tier: 1
     uniqueID: 0
-  unitToolTipText: 
-  unitTypes: 00000000
-  unitClasses: 00000000
+  unitToolTipText: Woooooosh
+  unitTypes: 02000000
+  unitClasses: 03000000
   storeSprite: {fileID: 0}
   unitPrefab:
-  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
-  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
-  - {fileID: 9071542367781185103, guid: a37fc1f197e9f004ba0f76f565943488, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   animator: {fileID: 0}
   baseStats:
     health:
-    - -758
+    - 0
     - 0
     - 0
     healthRegen:
@@ -35,61 +35,61 @@ MonoBehaviour:
     - 0
     - 0
     mana:
-    - 0
-    - 0
-    - 0
+    - 40
+    - 35
+    - 30
     manaRegen:
     - 0
     - 0
     - 0
     armor:
     - 0
-    - 0
-    - 0
+    - 5
+    - 15
     magicResist:
-    - 0
-    - 0
-    - 0
+    - 20
+    - 40
+    - 60
     attackDamage:
-    - 0
-    - 0
-    - 0
+    - 15
+    - 30
+    - 45
     attackSpeed:
-    - 0.25
-    - 0.25
-    - 0.25
-    attackRange: 010000000100000001000000
+    - 0.75
+    - 1
+    - 1.5
+    attackRange: 020000000200000003000000
     critChance:
-    - 0
-    - 0
-    - 0
+    - 0.05
+    - 0.1
+    - 0.15
     magicDamage:
     - 0
     - 0
     - 0
     manaGainOnHit:
-    - 0
-    - 0
-    - 0
+    - 5
+    - 5
+    - 5
     abilityCooldown:
     - 0
     - 0
     - 0
   targetingType: 0
   attackTypes:
-  - attackType: 000000000100000002000000
+  - attackType: 000000000000000000000000
     percent:
-    - 1
     - 0
     - 0
-  - attackType: 000000000100000002000000
+    - 0
+  - attackType: 000000000000000000000000
     percent:
-    - 1
     - 0
     - 0
-  - attackType: 000000000100000002000000
+    - 0
+  - attackType: 000000000000000000000000
     percent:
-    - 1
+    - 0
     - 0
     - 0
   audio: 0

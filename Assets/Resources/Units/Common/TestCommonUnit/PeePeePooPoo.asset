@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Test
   ID:
     tier: 1
-    uniqueID: 0
+    uniqueID: 99
   unitToolTipText: This is a testing common unit - neat eh
   unitTypes: 00000000
   unitClasses: 00000000
@@ -55,10 +55,10 @@ MonoBehaviour:
     - 0
     - 0
     attackSpeed:
-    - 0
-    - 0
-    - 0
-    attackRange: 000000000000000000000000
+    - 0.25
+    - 0.5
+    - 1
+    attackRange: 010000000200000003000000
     critChance:
     - 0
     - 0
@@ -75,6 +75,7 @@ MonoBehaviour:
     - 0
     - 0
     - 0
+  targetingType: 0
   attackTypes:
   - attackType: 000000000100000002000000
     percent:

@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
 
   [Header("Timer")]
   public TextMeshProUGUI timerText;
+  public TextMeshProUGUI currentStateText;
 
   [Header("Players")]
   public GameObject[] playerPanels;
@@ -122,6 +123,25 @@ public class UIManager : MonoBehaviour
   public void UpdateTimer(float time)
   {
     timerText.text = Mathf.FloorToInt(time).ToString();
+  }
+
+  public void UpdateRoundState(RoundState state)
+  {
+    switch(state)
+    {
+      case RoundState.roundOccuring:
+        currentStateText.text = Constants.roundOccuringString;
+        break;
+      case RoundState.paddingTime:
+        currentStateText.text = Constants.paddingTimeString;
+        break;
+      case RoundState.timeBetweenRounds:
+        currentStateText.text = Constants.timeBetweenRoundsString;
+        break;
+      default:
+        currentStateText.text = "Something went wrong!";
+        break;
+    }
   }
 
   #endregion

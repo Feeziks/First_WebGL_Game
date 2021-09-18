@@ -156,7 +156,7 @@ public class CardPoolManager : MonoBehaviour
     int count = 0;
     do
     {
-      randomUnitChoice = Mathf.FloorToInt(UnityEngine.Random.Range(0f, unitsInTier.Count - 1));
+      randomUnitChoice = Mathf.RoundToInt(UnityEngine.Random.Range(0f, unitsInTier.Count - 1));
       availableUnitCount = deck[tier][unitsInTier[randomUnitChoice]];
       count++;
     } while (availableUnitCount <= 0 && count < 100);

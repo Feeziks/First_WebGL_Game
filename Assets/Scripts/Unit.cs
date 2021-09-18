@@ -12,13 +12,15 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   public UnitStatusType status;
   public Player owner;
   public List<GameObject> enemyUnits;
-  //TODO: Lots more
 
   [Header("Location")]
   public GameObject thisBattleGameBoard;
   public Vector2Int hexAtRoundStart;
   public Vector2Int currentHex;
   public Vector2Int nextHex;
+  public bool moving;
+  private float movingTime;
+  private int failedMoveAttempts;
 
   [Header("Attack Information")]
   public float lastAttackTime;
@@ -26,6 +28,9 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   public GameObject target;
   public Unit targetUnit;
   public float DPS;
+
+  [Header("Display Information")]
+  
 
   private UIManager ui;
   private bool toolTip;
@@ -41,6 +46,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   {
     ui = FindObjectOfType(typeof(UIManager)) as UIManager;
     toolTip = false;
+    moving = false;
   }
 
   private void Start()
@@ -67,6 +73,15 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   public bool BattleTick()
   {
+    if (!gameObject.activeSelf)
+    {
+      return false;
+    }
+
+    DisplayHealthMana();
+
+    HealthAndManaRegen();
+
     if (enemyUnits.Count > 0)
     {
       if (status != UnitStatusType.stunned)
@@ -120,6 +135,9 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.closest:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
+
           thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
           if (thisDistance < minDistance)
           {
@@ -131,6 +149,9 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.furthest:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
+
           thisDistance = Vector3.Distance(gameObject.transform.position, go.transform.position);
           if (thisDistance > maxDistance)
           {
@@ -142,6 +163,9 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.lowestHp:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
+
           Unit u = go.GetComponent(typeof(Unit)) as Unit;
           thisHP = u.currentStats.health[unitLevel];
           if (thisHP < minHP)
@@ -154,6 +178,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.highestHp:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
           Unit u = go.GetComponent(typeof(Unit)) as Unit;
           thisHP = u.currentStats.health[unitLevel];
           if (thisHP > maxHP)
@@ -166,6 +192,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.highestDps:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
           Unit u = go.GetComponent(typeof(Unit)) as Unit;
           thisDPS = u.DPS;
           if (thisDPS < minDPS)
@@ -178,6 +206,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
       case UnitTargetingType.lowestDps:
         foreach (GameObject go in enemyUnits)
         {
+          if (!go.activeSelf)
+            continue;
           Unit u = go.GetComponent(typeof(Unit)) as Unit;
           thisDPS = u.DPS;
           if (thisDPS > maxDPS)
@@ -203,8 +233,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //TODO: Check if the targeted unit is within our range - range is defined in hexes how to get this to work in the game object transform level?
     //Maybe we can get the gameboard hexes that are within range # tiles away and check if the distance between us and the target is less than the distance between us and the furthest hex or something
 
-    int currentRange = currentStats.attackRange[unitLevel];
-    int distance = (int)Mathf.Abs((currentHex - targetUnit.currentHex).magnitude);
+    float currentRange = currentStats.attackRange[unitLevel] * Vector3.Distance(thisBattleGameBoard.transform.GetChild(0).transform.position, thisBattleGameBoard.transform.GetChild(1).transform.position);
+    float distance = Vector3.Distance(transform.position, targetUnit.transform.position);
 
     if (distance <= currentRange)
       return true;
@@ -222,13 +252,26 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     float minDistance = float.MaxValue;
     float thisDistance;
 
-    if (nextHex == currentHex)
+    if (!moving)
     {
       //Get the closest hex in that direction which is not occluded
       for (int x = -1; x <= 1; x += 2)
       {
         for (int y = -1; y <= 1; y += 2)
         {
+          //Make sure we arent wrapping around the edge of the board
+          if(currentHex.x == 0)
+          {
+            if (x == -1)
+              continue;
+          }
+
+          if(currentHex.x == Constants.boardWidth)
+          {
+            if (x == 1)
+              continue;
+          }
+
           //Get the hex at this index
           int hexIndex = currentHex.x + currentHex.y * Constants.boardWidth;
           hexIndex += x + y * Constants.boardWidth;
@@ -240,17 +283,38 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             bool occluded = false;
             foreach (GameObject go in owner.deployedUnits)
             {
+              if (!go.activeSelf)
+                continue;
+
               if (go.transform.position.x == hexGo.transform.position.x && go.transform.position.z == hexGo.transform.position.z)
               {
                 occluded = true;
                 break;
               }
+
+              if (owner.gameObjectToUnitDict[go].nextHex == currentHex + new Vector2Int(x, y))
+              {
+                occluded = true;
+                break;
+              }
             }
+
             if (!occluded)
             {
               foreach (GameObject go in enemyUnits)
               {
+                if (!go.activeSelf)
+                  continue;
+
+                Unit goUnit = go.GetComponent(typeof(Unit)) as Unit;
+
                 if (go.transform.position.x == hexGo.transform.position.x && go.transform.position.z == hexGo.transform.position.z)
+                {
+                  occluded = true;
+                  break;
+                }
+
+                if (goUnit.nextHex == currentHex + new Vector2Int(x, y))
                 {
                   occluded = true;
                   break;
@@ -263,30 +327,46 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
             //Check if this hex is in the right direction and if it is not occluded
             thisDistance = Vector3.Distance(hexGo.transform.position, target.transform.position);
-            if (thisDistance < currentDistance && thisDistance < minDistance)
+            if (failedMoveAttempts >= 30 || (thisDistance < currentDistance && thisDistance < minDistance))
             {
               minDistance = thisDistance;
               nextHex = new Vector2Int(currentHex.x + x, currentHex.y + y);
+              moving = true;
+              movingTime = 0f;
+              failedMoveAttempts = 0;
+            }
+            else
+            {
+              failedMoveAttempts++;
             }
           }
         }
       }
     }
-
-    if(nextHex != currentHex)
+    else
     {
-      //Move to the next position
+      Vector3 startPos = thisBattleGameBoard.transform.GetChild(currentHex.x + currentHex.y * Constants.boardWidth).position + new Vector3(0f, gameObject.transform.localScale.y + 1f, 0f);
       Vector3 nextPosition = thisBattleGameBoard.transform.GetChild(nextHex.x + nextHex.y * Constants.boardWidth).position + new Vector3(0f, gameObject.transform.localScale.y + 1f, 0f);
-      transform.position = Vector3.Lerp(transform.position, nextPosition, Constants.timeToMoveHex);
+      if (gameObject.transform.position != nextPosition || movingTime < Constants.timeToMoveHex)
+      {
+        transform.position = Vector3.Lerp(startPos, nextPosition, Mathf.Min(movingTime / Constants.timeToMoveHex, 1f));
+        movingTime += 1f / Constants.tickRate;
+      }
+      else
+      {
+        moving = false;
+        movingTime = 0f;
+        currentHex = nextHex;
+        failedMoveAttempts = 0;
+      }
     }
-
   }
 
   private void AttackTarget()
   {
     //TODO: Create an attack timer that keeps track of our last attack time, and the interval between attacks
     //If the time that has lapsed since the last attack time is greater than the interval between attack times then perform a new attack
-    if (lastAttackTime + (1f / currentStats.attackSpeed[unitLevel]) >= Time.realtimeSinceStartup)
+    if (lastAttackTime + (1f / currentStats.attackSpeed[unitLevel]) >= Time.realtimeSinceStartup || lastAttackTime == 0f)
     {
       //Do the attack
       if (target)
@@ -332,6 +412,22 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   {
     //The unit has died
     gameObject.SetActive(false);
+
+    currentHex = hexAtRoundStart;
+    nextHex = currentHex;
+  }
+
+  private void DisplayHealthMana()
+  {
+    //TODO: Display a health and mana bar above the units head
+
+    //Every 100 points of hp add a line into the hp bar to denote that amount of health
+  }
+
+  private void HealthAndManaRegen()
+  {
+    currentStats.health[unitLevel] += currentStats.healthRegen[unitLevel] / Constants.tickRate;
+    currentStats.mana[unitLevel] += currentStats.manaRegen[unitLevel] / Constants.tickRate;
   }
 
   public void RecieveDamge(UnitDamageDealtType data)
@@ -525,7 +621,31 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
   public void SetStatsAtRoundStart()
   {
+    //TODO: Add Item stats
+    //TODO: Add class stats
+    //TODO: Add type stats
     currentStats = soUnit.baseStats;
+  }
+
+  #endregion
+
+  #region Debugging
+
+  public void OnDrawGizmos()
+  {
+    if (target)
+    {
+      Gizmos.color = Color.white;
+      Gizmos.DrawLine(transform.position, target.transform.position);
+    }
+
+    if (thisBattleGameBoard)
+    {
+      Gizmos.color = Color.green;
+      Gizmos.DrawLine(transform.position, thisBattleGameBoard.transform.GetChild(nextHex.x + nextHex.y * Constants.boardWidth).position + new Vector3(0f, gameObject.transform.localScale.y + 1f, 0f));
+
+      Gizmos.DrawWireSphere(transform.position, currentStats.attackRange[unitLevel] * Vector3.Distance(thisBattleGameBoard.transform.GetChild(0).transform.position, thisBattleGameBoard.transform.GetChild(1).transform.position));
+    }
   }
 
   #endregion

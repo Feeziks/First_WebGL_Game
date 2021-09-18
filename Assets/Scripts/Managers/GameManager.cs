@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         thisEnemyUnit.unitLevel = board.level[idx];
         thisEnemyUnit.status = UnitStatusType.normal;
         thisEnemyUnit.SetRoundStartHex(playerBoard.transform.GetChild(playerBoard.transform.childCount - (int)(board.positions[idx].x + board.positions[idx].y * Constants.boardWidth)).gameObject);
-
+        thisEnemyUnit.SetStatsAtRoundStart();
         enemyUnits.Add(thisEnemy);
       }
     }
@@ -240,6 +240,8 @@ public class GameManager : MonoBehaviour
     timeBetwenRoundOccuring = true;
     float timer = Constants.timeBetweenRounds;
 
+    players[0].ui.UpdateRoundState(RoundState.timeBetweenRounds);
+
     if (Constants.PveRounds.Contains(currentRound))
     {
       LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);
@@ -305,6 +307,8 @@ public class GameManager : MonoBehaviour
     roundOccuring = true;
     float timer = Constants.roundTimeout;
 
+    players[0].ui.UpdateRoundState(RoundState.roundOccuring);
+
     foreach (Player p in players)
     {
       p.roundOccuring = true;
@@ -351,6 +355,8 @@ public class GameManager : MonoBehaviour
   private IEnumerator PaddingTimer()
   {
     float timer = Constants.paddingTime;
+
+    players[0].ui.UpdateRoundState(RoundState.paddingTime);
 
     foreach (Player p in players)
     {
