@@ -242,6 +242,13 @@ public class GameManager : MonoBehaviour
 
     players[0].ui.UpdateRoundState(RoundState.timeBetweenRounds);
 
+    foreach(Player p in players)
+    {
+      p.UpdateMoney(Constants.storeRefreshPrice);
+      p.sm.RefreshShop();
+    }
+
+
     if (Constants.PveRounds.Contains(currentRound))
     {
       LoadPVEBoards(Constants.pveRoundToBoardStateDict[currentRound]);

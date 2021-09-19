@@ -31,9 +31,9 @@ public class UnitID
 
 public enum UnitTier : int
 {
-  common    = 1,
-  uncommon  = UnitTier.common + 1,
-  rare      = UnitTier.uncommon + 1,
+  common = 1,
+  uncommon = UnitTier.common + 1,
+  rare = UnitTier.uncommon + 1,
   legendary = UnitTier.rare + 1
 }
 
@@ -70,13 +70,34 @@ public class UnitStats
   [Header("Attack")]
   public float[] attackDamage = new float[Constants.maxUnitLevel];
   public float[] attackSpeed = new float[Constants.maxUnitLevel];
-  public int[]   attackRange = new int[Constants.maxUnitLevel];
+  public int[] attackRange = new int[Constants.maxUnitLevel];
   public float[] critChance = new float[Constants.maxUnitLevel];
 
   [Header("Magic")]
   public float[] magicDamage = new float[Constants.maxUnitLevel];
-  public float[] manaGainOnHit = new float[Constants.maxUnitLevel];  
+  public float[] manaGainOnHit = new float[Constants.maxUnitLevel];
   public float[] abilityCooldown = new float[Constants.maxUnitLevel];
+
+  public UnitStats ShallowCopy()
+  {
+    UnitStats clone = new UnitStats();
+
+    clone.health = (float[])this.health.Clone();
+    clone.healthRegen = (float[])this.healthRegen.Clone();
+    clone.mana = (float[])this.mana.Clone();
+    clone.manaRegen = (float[])this.manaRegen.Clone();
+    clone.armor = (float[])this.armor.Clone();
+    clone.magicResist = (float[])this.magicResist.Clone();
+    clone.attackDamage = (float[])this.attackDamage.Clone();
+    clone.attackSpeed = (float[])this.attackSpeed.Clone();
+    clone.attackRange = (int[])this.attackRange.Clone();
+    clone.critChance = (float[])this.critChance.Clone();
+    clone.magicDamage = (float[])this.magicDamage.Clone();
+    clone.manaGainOnHit = (float[])this.manaGainOnHit.Clone();
+    clone.abilityCooldown = (float[])this.abilityCooldown.Clone();
+
+    return clone;
+  }
 }
 
 [System.Serializable]

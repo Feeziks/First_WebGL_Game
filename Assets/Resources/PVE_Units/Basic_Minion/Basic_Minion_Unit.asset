@@ -27,7 +27,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   baseStats:
     health:
-    - -758
+    - 50
     - 0
     - 0
     healthRegen:

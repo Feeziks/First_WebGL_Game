@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IEndDragHandler
 {
@@ -30,7 +31,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
   public float DPS;
 
   [Header("Display Information")]
-  
+  public Image hpBar;
+  public RawImage manaBar;
 
   private UIManager ui;
   private bool toolTip;
@@ -47,6 +49,10 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     ui = FindObjectOfType(typeof(UIManager)) as UIManager;
     toolTip = false;
     moving = false;
+    currentStats = new UnitStats();
+
+    hpBar = transform.GetChild(0).GetChild(0).gameObject.GetComponent(typeof(Image)) as Image;
+    manaBar = transform.GetChild(0).GetChild(1).gameObject.GetComponent(typeof(RawImage)) as RawImage;
   }
 
   private void Start()
@@ -77,8 +83,6 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
       return false;
     }
-
-    DisplayHealthMana();
 
     HealthAndManaRegen();
 
@@ -417,17 +421,18 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     nextHex = currentHex;
   }
 
-  private void DisplayHealthMana()
+  private void UpdateHealthManaBars()
   {
-    //TODO: Display a health and mana bar above the units head
-
-    //Every 100 points of hp add a line into the hp bar to denote that amount of health
+    hpBar.rectTransform.sizeDelta = new Vector2((currentStats.health[unitLevel] / soUnit.baseStats.health[unitLevel]) * 20f, hpBar.rectTransform.sizeDelta.y);
+    manaBar.rectTransform.sizeDelta = new Vector2((currentStats.mana[unitLevel] / soUnit.baseStats.mana[unitLevel]) * 20f, hpBar.rectTransform.sizeDelta.y);
   }
 
   private void HealthAndManaRegen()
   {
     currentStats.health[unitLevel] += currentStats.healthRegen[unitLevel] / Constants.tickRate;
     currentStats.mana[unitLevel] += currentStats.manaRegen[unitLevel] / Constants.tickRate;
+
+    UpdateHealthManaBars();
   }
 
   public void RecieveDamge(UnitDamageDealtType data)
@@ -454,6 +459,8 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
           break;
       }
     }
+
+    UpdateHealthManaBars();
 
     if (currentStats.health[unitLevel] <= 0f)
     {
@@ -624,7 +631,7 @@ public class Unit : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //TODO: Add Item stats
     //TODO: Add class stats
     //TODO: Add type stats
-    currentStats = soUnit.baseStats;
+    currentStats = soUnit.baseStats.ShallowCopy();
   }
 
   #endregion

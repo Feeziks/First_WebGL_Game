@@ -397,6 +397,7 @@ public class Player
     foreach(GameObject go in deployedUnits)
     {
       gameObjectToUnitDict[go].enemyUnits = enemyUnits;
+      gameObjectToUnitDict[go].SetStatsAtRoundStart();
     }
 
     if(bm.GetGameBoard() != gameBoard)
@@ -462,7 +463,6 @@ public class Player
         thisUnit.transform.position = hexToPlace.transform.position + new Vector3(0f, thisUnit.transform.localScale.y + 1f, 0f);
         deployedUnits.Add(thisUnit);
         gameObjectToUnitDict[thisUnit].SetRoundStartHex(hexToPlace);
-        gameObjectToUnitDict[thisUnit].SetStatsAtRoundStart();
         break;
       }
     }
